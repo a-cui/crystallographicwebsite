@@ -16,14 +16,14 @@
 	font-size: 15px
 }
 .active, .collapsible:hover {
-	background-color:#555;
+	background-color:#ffffcc;
 }
 .content {
 	padding: 0 18px;
 	max-height: 0;
 	overflow: hidden;
 	transition: max-height 0.2s ease-out;
-	background-color: #f1f1f1;
+	background-color: white;
 }
 table, th, td {
 	border:1px solid black;
@@ -57,7 +57,7 @@ h1 {
 <body>
 <h1>Crystallographic Sphere Packings</h1>
 <h2>Polyhedral Circle Packings</h2>
-<button class="collapsible">Polyhedra</button>
+<button class="collapsible">Click to expand </button>
 <div class="content">
 <table style="width:100%">
 	<tr>
@@ -136,6 +136,8 @@ h1 {
 </table>
 </div>
 <h2>Bianchi Group Packings</h2>
+<button class="collapsible">Bianchi Groups</button>
+<div class="content">
 <table style="width:100%">
 	<tr>
 		<th>Group</th>
@@ -168,6 +170,7 @@ h1 {
 		<td></td> <!--mathematica-->
 	</tr>
 </table>
+</div>
 <script>
 var coll = document.getElementsByClassName("collapsible");
 var i;
