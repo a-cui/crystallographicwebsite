@@ -1,0 +1,2952 @@
+In[1]:= F[x_] := 1/2 I (PolyLog[2, -I E^x] - PolyLog[2, I E^x])
+
+In[2]:= G3[a_, b_] := F[a - b] + F[b - a] - \[Pi]/2 (a + b);
+
+In[3]:= EnergySetup[n_, FacesCW_] := 
+  Module[{i, rhoV, rhoF, include, LineFaces, f, Faces, NM, 
+    nonlinefaces, radii, RADII},
+   Faces = Sort /@ FacesCW;
+   f = Length[Faces];
+   LineFaces = {}; rhoV = Table[Subscript[rV, i], {i, 1, n - 2}]; 
+   rhoF = Table[Subscript[rF, i], {i, 1, f - 2}];
+   include = {};
+   nonlinefaces = {};
+   For[i = 1, i <= f, i++,
+    If[! (Faces[[i, -2]] == n - 1 && Faces[[i, -1]] == n),
+     (* then *) AppendTo[include, i]; 
+     AppendTo[nonlinefaces, FacesCW[[i]]],
+     (* else *) AppendTo[LineFaces, i]]];
+   
+   NM = NMinimize[{\!\(
+\*UnderoverscriptBox[\(\[Sum]\), \(k = 1\), \(f - 2\)]\(
+\*UnderoverscriptBox[\(\[Sum]\), \(i = 1\), \(Length[
+           Faces[\([\)\(include[\([\)\(k\)\(]\)]\)\(]\)]]\)]If[
+          Faces[\([\)\(include[\([\)\(k\)\(]\)], i\)\(]\)] < n - 1, G3[
+\*SubscriptBox[\(rV\), \(Faces[\([\)\(include[\([\)\(k\)\(]\)], 
+             i\)\(]\)]\)], 
+\*SubscriptBox[\(rF\), \(k\)]], 0]\)\) + \!\(
+\*UnderoverscriptBox[\(\[Sum]\), \(i = 1\), \(n - 2\)]\(
+\*SubscriptBox[\(rV\), \(i\)] \[Pi]\ If[
+          MemberQ[Flatten@
+            Table[Faces[\([\)\(LineFaces[\([\)\(m\)\(]\)]\)\(]\)], \
+{m, 1, 2}], i],  (*\ then\ *) \ 1,  (*\ else\ *) \ 2]\)\) + \!\(
+\*UnderoverscriptBox[\(\[Sum]\), \(j = 1\), \(f - 2\)]\(
+\*SubscriptBox[\(rF\), \(j\)] \[Pi]\ If[
+          MemberQ[Faces[\([\)\(include[\([\)\(j\)\(]\)]\)\(]\)], 
+            n - 1] || 
+           MemberQ[Faces[\([\)\(include[\([\)\(j\)\(]\)]\)\(]\)], 
+            n],  (*\ then\ *) \ 1,  (*\ else\ *) \ 2]\)\),
+      \!\(
+\*UnderoverscriptBox[\(\[Sum]\), \(i = 1\), \(n - 2\)]
+\*SubscriptBox[\(rV\), \(i\)]\) + \!\(
+\*UnderoverscriptBox[\(\[Sum]\), \(j = 1\), \(f - 2\)]
+\*SubscriptBox[\(rF\), \(j\)]\) == 0}, Join[rhoV, rhoF]];
+   RADII = Exp[Re[Join[rhoV, rhoF] /. (NM[[2]])]];
+   RADII /= RADII[[1]];
+   radii = <||>;
+   For[i = 1, i <= n - 2, i++,
+    radii[i] = RADII[[i]]
+    ];
+   For[i = 1, i <= Length[nonlinefaces], i++,
+    radii[nonlinefaces[[i]]] = RADII[[n - 2 + i]]
+    ];
+   {radii, LineFaces}
+   ];
+
+In[4]:= Boundary[n_, FacesCW_, LineFaces_, radii_, \[Epsilon]_: 0] := 
+  Module[{i, j, faces, vertices, lastvisited, d, h, H, breaker, 
+    unvisited, f, endcircle, ComputeEndcircle, ComputeEndcircle2, 
+    delete},
+   unvisited = FacesCW;(*Keeps track of the faces we haven't visited*)
+
+   
+   f = Length[FacesCW];
+   
+   faces = <||>; (* centers of face circles (or normals, for lines) *)
+
+   
+   For[i = 1, i <= f, i++, 
+    faces[FacesCW[[i]]] = {-\[Infinity], -\[Infinity]}];
+   vertices = <||>; (* centers of vertex circles (or normals, 
+   for lines) *)
+   For[i = 1, i <= n - 2, i++, 
+    vertices[i] = {-\[Infinity], -\[Infinity]}];
+   (* Radii is an assoc from v\[Rule]rad and facelist\[Rule]rad *)
+   
+   (*Vertex circles going vertically upwards along first FaceLine*)
+   h = 0; (* height along the left line *)
+   For[i = 1, 
+    i <= Length[FacesCW[[LineFaces[[1]]]]] - 
+      2(*Number of vertex circles that lie along first LineFace*), i++,
+    vertices[FacesCW[[LineFaces[[1]], i]]] = {0, 
+      h + radii[
+        FacesCW[[LineFaces[[1]], 
+         i]]]};(*Set the center of this vertex circle*)
+    h += 2 radii[[
+       FacesCW[[LineFaces[[1]], 
+        i]]]]];(*Keeps track of our cumulative height as we climb up \
+the first FaceLine*)
+   
+   unvisited = 
+    Delete[unvisited, Position[unvisited, FacesCW[[LineFaces[[1]]]]]];
+   
+   d = 0;(*Horizontal distance*)
+   
+   ComputeEndcircle[prev_, face_] :=
+    (*Returns which vertex circle we calculated last based on \
+previous vertex circle and face*)
+    If[face[[
+       Mod[Position[face, n - 1][[1, 1]] - 2, Length[face]] + 1]] == 
+      prev,
+     (*then*)
+     face[[Mod[Position[face, n - 1][[1, 1]], Length[face]] + 1]],
+     (*else*) 
+     face[[Mod[Position[face, n - 1][[1, 1]] - 2, Length[face]] + 1]]];
+   
+   endcircle = 
+    ComputeEndcircle[n, 
+     FacesCW[[
+      LineFaces[[1]]]]];(*Previous vertex circle is bottom line, 
+   face is first FaceLine*)
+   
+   (*Face circles going horizontally across upper vertex line*)
+   breaker = True;
+   For[j = 1, j <= f , j++,
+    For[i = 1, i <= Length[unvisited], i++,
+     If[MemberQ[unvisited[[i]], n - 1], (*determine if this face-
+      circle contains n-1, so it is on the upper vertex line*)
+      If[MemberQ[unvisited[[i]], 
+        ComputeEndcircle[endcircle, unvisited[[i]]]],
+       (*determine if this face-
+       circle also contains the vertex right before n-1 to ensure we \
+are going horizontally across in the right order*)
+       If[unvisited[[i]] == FacesCW[[LineFaces[[2]]]],
+        (* If we've reached the second faceline, 
+        then do nothing--find the other face circle containing \
+endcircle*)
+        ,
+        (* else if the face circle is not a line*)
+        faces[unvisited[[i]]] = {d + radii[unvisited[[i]]], 
+          h}; (*Set the center of this face circle*)
+        d += 2 radii[unvisited[[i]]]; (* 
+        update how far along the top line we are *)
+        endcircle = 
+         ComputeEndcircle[endcircle, 
+          unvisited[[i]]];(*Update endcircle*)
+        unvisited = Delete[unvisited, i];] (* 
+       remove that face from the unvisited list *)
+       ]
+      ]
+     ]
+    ];
+   (*Vertex circles along the second FaceLine, 
+   climbing vertically upwards*)
+   h = 0;
+   For[i = 1, i <= Length[FacesCW[[LineFaces[[2]]]]] - 2, i++,
+    vertices[FacesCW[[LineFaces[[2]], i]]] = {d, 
+      h + radii[FacesCW[[LineFaces[[2]], i]]]}; 
+    h += 2 radii[[FacesCW[[LineFaces[[2]], i]]]]];
+   H = h;
+   h = 0;(*Reset height*)
+   
+   ComputeEndcircle2[prev_, face_] :=
+    If[face[[Mod[Position[face, n][[1, 1]] - 2, Length[face]] + 1]] ==
+       prev,
+     (*then*)face[[Mod[Position[face, n][[1, 1]], Length[face]] + 1]],
+     (*else*) 
+     face[[Mod[Position[face, n][[1, 1]] - 2, Length[face]] + 1]]];
+   
+   endcircle = ComputeEndcircle2[n - 1, FacesCW[[LineFaces[[1]]]]];
+   (*Face circles along lower vertex line, 
+   moving horizontally from origin to second FaceLine*)
+   d = 0;(*Reset distance*)
+   breaker = True;
+   For[j = 1, j <= f, j++,
+    For[i = 1, i <= Length[unvisited], i++,
+     If[MemberQ[unvisited[[i]], n], (* determine if this face-
+      circle contains n *)
+      If[MemberQ[unvisited[[i]], endcircle(* ComputeEndcircle2[
+        endcircle,unvisited[[i]]] *)],(* determine if this face-
+       cirlce also contains the vertex right before n *)
+       If[unvisited[[i]] == FacesCW[[LineFaces[[2]]]],
+        (* If we've reached the second faceline, then do nothing*)
+        ,
+        (* else *)
+        faces[unvisited[[i]]] = {d + radii[unvisited[[i]]], h}; (* 
+        then we'll make this face's center be where we know it is *)
+        d += 2 radii[unvisited[[i]]]; (* 
+        update how far along the bottom line we are *)
+        endcircle = ComputeEndcircle2[endcircle, unvisited[[i]]];
+        unvisited = Delete[unvisited, i];] (* 
+       remove that face from the unvisited list *)
+       ]
+      ]
+     ]
+    ];
+   (*Set the normals of the vertex lines and face lines*)
+   faces[FacesCW[[LineFaces[[2]]]]] = {1, 0};
+   faces[FacesCW[[LineFaces[[1]]]]] = {-1, 0};
+   vertices[n] = {0, -1};
+   vertices[n - 1] = {0, 1};
+   
+   If[ThrowOrderError[faces, vertices, radii, d, H, n, 
+     FacesCW[[LineFaces]], 0],
+    faces[FacesCW[[LineFaces[[1]]]]] *= -1;
+    faces[FacesCW[[LineFaces[[2]]]]] *= -1;
+    For[i = 1, i <= n, i++,
+     If[i == n - 1 || i == n,
+      ,
+      If[Abs[vertices[i][[1]] - d] <= \[Epsilon],
+        vertices[i] = {0, vertices[i][[2]]},
+        If[Abs[vertices[i][[1]] - 0] <= \[Epsilon],
+         vertices[i] = {d, vertices[i][[2]]}]];
+      ]]];
+   
+   (*Return the assoc's of the faces to their centers and vertices to \
+their centers*)
+   {vertices, faces, d, H}
+   ];
+
+In[5]:= FindRest[{x_, y_}, r_, face_, vertices_, radii_, lines_] :=(* 
+  face is all the vertices that the face intersects *)
+  (*{x_,y_},r: known center of opposite kind and its radius
+  face: all the circles of its kind that pass thru that opposite \
+known circle
+  vertices: 
+  all the circles of its kind that are tangent to the one we'e \
+looking for*)
+  Module[{verts = vertices, i, j, \[Phi], \[Theta], \[Omega], 
+    face2 = face, b, b2 = True},
+   
+   If[verts[face2[[1]]] == {-\[Infinity], -\[Infinity]} || 
+     MemberQ[lines, face2[[1]]],
+    For[i = 2, i <= Length[face2] && b2, i++,
+     If[verts[face2[[i]]] != {-\[Infinity], -\[Infinity]} && ! 
+        MemberQ[lines, face2[[i]]],
+      face2 = Join[face2[[i ;;]], face2[[;; i - 1]]];
+      b2 = False;
+      ]]];
+   
+   b = True;
+   For[i = 2, i <= Length[face2] && b, i++,
+    If[MemberQ[lines, face2[[i]]],
+      AppendTo[face2, face2[[1]]];
+      For[j = Length[face2] - 1, j > i, j--,
+       If[verts[face2[[j]]] == {-\[Infinity], -\[Infinity]},
+        \[Phi] = 
+         ArcTan[verts[face2[[j + 1]]][[1]] - x, 
+          verts[face2[[j + 1]]][[2]] - y];
+        \[Theta] = ArcTan[radii[face2[[j + 1]]]/r];(* 
+        j+1 refers to previously computed / known *)
+        \[Omega] = ArcTan[radii[face2[[j]]]/r];
+        verts[
+          face2[[j]]] = {x + 
+           Sqrt[r^2 + radii[face2[[j]]]^2]
+             Cos[\[Phi] - \[Theta] - \[Omega]], 
+          y + Sqrt[r^2 + radii[face2[[j]]]^2]
+             Sin[\[Phi] - \[Theta] - \[Omega]]}
+        ]
+       ]; b = False; Break,
+      If[verts[face2[[i]]] == {-\[Infinity], -\[Infinity]},
+        \[Phi] = 
+         ArcTan[verts[face2[[i - 1]]][[1]] - x, 
+          verts[face2[[i - 1]]][[2]] - y];
+        \[Theta] = ArcTan[radii[face2[[i - 1]]]/r];(* 
+        i-1 refers to previously computed / known *)
+        \[Omega] = ArcTan[radii[face2[[i]]]/r];
+        verts[
+          face2[[i]]] = {x + 
+           Sqrt[r^2 + radii[face2[[i]]]^2]
+             Cos[\[Phi] + \[Theta] + \[Omega]], 
+          y + Sqrt[r^2 + radii[face2[[i]]]^2]
+             Sin[\[Phi] + \[Theta] + \[Omega]]}];
+      ];];
+   verts
+   ];
+
+
+In[6]:= Cull[assoc_] := 
+ Module[{vis = {}, unv = {}, i}, 
+  For[i = 1, i <= Length[Keys[assoc]], i++, 
+   If[assoc[Keys[assoc][[i]]] == {-\[Infinity], -\[Infinity]}, 
+    AppendTo[unv, Keys[assoc][[i]]], 
+    AppendTo[vis, Keys[assoc][[i]]]]]; {vis, unv}]
+
+In[7]:= Interior[n_, FacesCW_, LineFaces_, radii_, vertices_, faces_, 
+   d_, h_] :=
+  Module[{Vunv = {}, Funv = {}, Vvis = {}, Fvis = {}, i, j, f, 
+    verts = vertices, verts2, fcs = faces, fcs2, fi, vi, x, y, k, b},
+   f = Length[FacesCW];
+   For[i = 1, i <= n, i++,
+    If[vertices[i] == {-\[Infinity], -\[Infinity]}, AppendTo[Vunv, i],
+      AppendTo[Vvis, i]]];
+   For[i = 1, i <= f, i++,
+    If[faces[FacesCW[[i]]] == {-\[Infinity], -\[Infinity]}, 
+     AppendTo[Funv, FacesCW[[i]]], AppendTo[Fvis, FacesCW[[i]]]]];
+   
+   For[j = 1, 
+    j <= n + Length[FacesCW] && (Length[Vunv] + Length[Funv] > 0), j++,
+    
+    For[i = 1, i <= Length[Fvis], i++,(* for a known face circle *)
+     If[Length[Intersection[Vvis, Fvis[[i]]]]*
+        Length[Intersection[Vunv, Fvis[[i]]]] > 0,
+      fi = Fvis[[i]];
+      {x, y} = fcs[fi];
+      verts2 = 
+       FindRest[{x, y}, radii[fi], fi, verts, radii, {n - 1, n}];
+      If[ThrowOrderError[fcs, verts2, radii, d, h, 
+        n, {FacesCW[[LineFaces[[1]]]], FacesCW[[LineFaces[[2]]]]}, 0],
+        verts = 
+        FindRest[{x, y}, radii[fi], Reverse[fi], verts, 
+         radii, {n - 1, n}],
+       verts = verts2];
+      ];
+     {Vvis, Vunv} = Cull[verts];
+     ];
+    
+    For[i = 1, i <= Length[Vvis], i++, (* for a known vertex circle *)
+
+     
+     If[b = False;
+      For[k = 1, k <= Length[Fvis], k++, 
+       b = b || If[MemberQ[Fvis[[k]], Vvis[[i]]], True, False]]; b,
+      If[b = False; 
+       For[k = 1, k <= Length[Funv], k++, 
+        b = b || If[MemberQ[Funv[[k]], Vvis[[i]]], True, False]]; b,
+       (* then *)
+       vi = Vvis[[i]];
+       {x, y} = verts[vi];
+       fcs2 = 
+        FindRest[{x, y}, radii[vi], FacesList[vi, FacesCW], fcs, 
+         radii, FacesCW[[LineFaces]]];
+       If[
+        ThrowOrderError[fcs2, verts, radii, d, h, n, 
+         FacesCW[[LineFaces]], 0],
+        fcs = FindRest[{x, y}, radii[vi],
+          Reverse[FacesList[vi, FacesCW]], fcs, radii, 
+          FacesCW[[LineFaces]]],
+        fcs = fcs2];
+       ];
+      {Fvis, Funv} = Cull[fcs];
+      ]
+     ];
+    ];
+   {verts, fcs}
+   ];
+
+
+In[8]:= ThrowOrderError[fcs2_, verts_, radii_, d_, h_, n_, 
+   fls_, \[Epsilon]_](* fcs2 is proposed fcs association. 
+  fls is facelines *):=
+  Module[{i, j, b, b2, K},
+   K = {};
+   For[i = 1, i <= Length[Keys[fcs2]], i++,
+    If[! MemberQ[fls, Keys[fcs2][[i]]], AppendTo[K, Keys[fcs2][[i]]]]
+    ];
+   
+   b = False; (* "breaker" *)
+   For[i = 1, i <= Length[K] && ! b, i++,
+    If[b2 = False;
+      -\[Infinity] < fcs2[K[[i]]][[1]] < 0
+       || -\[Infinity] < fcs2[K[[i]]][[2]] < 0
+       || fcs2[K[[i]]][[1]] > d
+       || fcs2[K[[i]]][[2]] > h
+       || (For[j = 1, j <= Length[K[[i]]], j++,
+         If[
+          K[[i, j]] != n - 1 && K[[i, j]] != n && 
+           verts[K[[i, j]]] != {-\[Infinity], -\[Infinity]} && 
+           fcs2[K[[i]]] != {-\[Infinity], -\[Infinity]},
+          
+          If[EuclideanDistance[verts[K[[i, j]]], 
+             fcs2[K[[i]]]] >= (1 - \[Epsilon]) (radii[K[[i, j]]] + 
+               radii[K[[i]]]), b2 = True; Break]]]; b2),
+      b = True,
+      
+      For[j = 1, j <= Length[K] && ! b, j++,
+       If[
+        i != j && fcs2[K[[i]]] != {-\[Infinity], -\[Infinity]} && 
+         fcs2[K[[j]]] != {-\[Infinity], -\[Infinity]} &&
+         EuclideanDistance[fcs2[K[[i]]], 
+           fcs2[K[[j]]]] < (1 + \[Epsilon]) (radii[fcs2[K[[i]]]] + 
+             radii[fcs2[K[[j]]]])
+        ,(* then, bad *) b = True]]];
+    ];
+   
+   
+   For[i = 1, i <= Length[fls[[1]]] && ! b, i++,
+    If[verts[fls[[1, i]]][[1]] != d/2 + fcs2[fls[[1]]][[1]] d/2 && 
+      fls[[1, i]] < n - 1, b = True]
+    ];
+   For[i = 1, i <= Length[fls[[2]]] && ! b, i++,
+    If[verts[fls[[2, i]]][[1]] != d/2 + fcs2[fls[[2]]][[1]] d/2 && 
+      fls[[2, i]] < n - 1, b = True]
+    ];
+   
+   b
+   ];
+
+In[9]:= FacesList[v_, Faces_] :=
+  Module[{ContainV = {}, i, L = 2, p = 3, temp},
+   For[i = 1, i <= Length[Faces], i++,
+    If[MemberQ[Faces[[i]], v], AppendTo[ContainV, Faces[[i]]]]];
+   While[L < Length[ContainV],
+    While[p <= Length[ContainV],
+     If[Length[Intersection[ContainV[[L - 1]], ContainV[[p]]]] == 2,
+      temp = ContainV[[p]]; ContainV[[p]] = ContainV[[L]]; 
+      ContainV[[L]] = temp; p = 1 + Length[ContainV],
+      p++]
+     ];
+    L++;
+    p = L + 1;
+    ];
+   ContainV];
+
+In[10]:= Q = ( {
+    {0, 1/2, 0, 0},
+    {1/2, 0, 0, 0},
+    {0, 0, -1, 0},
+    {0, 0, 0, -1}
+   } );
+
+In[11]:= InvCoords[z_, r_, d_: 0] := 
+  If[r == \[Infinity], {2 d, 0, z}, {Norm[z]^2/r - r, 1/r, z/r}];
+
+In[12]:= Gram[SC_] := SC.Q.Transpose[SC];
+SuperCluster[vertices_, faces_, radii_, fls_, d_, h_, n_] :=
+  Module[{sc = {}, i},
+   For[i = 1, i <= n - 2, i++, 
+    AppendTo[sc, Flatten[InvCoords[vertices[i], radii[i]]]]];
+   AppendTo[sc, 
+    Flatten[InvCoords[vertices[n - 1], \[Infinity], 
+      h/2 + vertices[n - 1][[2]] h/2]]];
+   AppendTo[sc, 
+    Flatten[InvCoords[vertices[n], \[Infinity], 
+      h/2 + vertices[n][[2]] h/2]]];
+   For[i = 1, i <= Length[Keys[faces]], i++,
+    If[! MemberQ[fls, Keys[faces][[i]]],
+     AppendTo[sc, 
+      Flatten[InvCoords[faces[Keys[faces][[i]]], 
+        radii[Keys[faces][[i]]]]]]
+     ]];
+   AppendTo[sc, 
+    Flatten[
+     InvCoords[faces[fls[[1]]], \[Infinity], 
+      d/2 + faces[fls[[1]]][[1]] d/2]]];
+   AppendTo[sc, 
+    Flatten[InvCoords[faces[fls[[2]]], \[Infinity], 
+      d/2 + faces[fls[[2]]][[1]] d/2]]];
+   sc
+   ];
+
+In[14]:= DrawCircle[{bhat_, b_, bx_, by_}] := 
+  If[b != 0, Circle[{bx, by}/b, 1/b], 
+   InfiniteLine[{bx, by} bhat/2, {-by, bx}]];
+
+In[15]:= Packing[n_, FacesCW_, \[Epsilon]_: 0] :=
+  Module[{radii, LineFaces, vertices, faces, d, h},
+   {radii, LineFaces} = EnergySetup[n, FacesCW];
+   {vertices, faces, d, h} = 
+    Boundary[n, FacesCW, LineFaces, radii, \[Epsilon]];
+   {vertices, faces} = 
+    Interior[n, FacesCW, LineFaces, radii, vertices, faces, d, h];
+   {vertices, faces, radii, d, h, LineFaces}];
+
+In[16]:= Render[radii_, fcs_, verts_, fls_, n_, d_, h_] := 
+  Graphics[{Blue, Thick,
+    Table[
+     If[i == n - 1, 
+      Line[{{-Max[Values[radii]], h}, {d + Max[Values[radii]], h}}], 
+      If[i == n, 
+       Line[{{-Max[Values[radii]], 0}, {d + Max[Values[radii]], 0}}],
+       Circle[verts[Keys[verts][[i]]], radii[Keys[verts][[i]]]]]], {i,
+       1, n}],
+    Red, Dashed,
+    Table[
+     If[Keys[fcs][[i]] == fls[[1]], 
+      Line[{{0, -Max[Values[radii]]}, {0, h + Max[Values[radii]]}}],
+      If[Keys[fcs][[i]] == fls[[2]], 
+       Line[{{d, -Max[Values[radii]]}, {d, h + Max[Values[radii]]}}],
+       Circle[fcs[Keys[fcs][[i]]], radii[Keys[fcs][[i]]]]]], {i, 1, 
+      Length[Keys[fcs]]}]
+    }];
+
+In[17]:= SendToInt[\[Epsilon]_: 0][x_] := 
+  If[Abs[Abs[x] - Floor[Abs[x]]] < \[Epsilon] , Floor[x],
+   If[Abs[Abs[x] - Ceiling[Abs[x]]] < \[Epsilon] , Ceiling[x], x], x];
+
+In[18]:= R[vhat_] := IdentityMatrix[4] + 2 Q.Transpose[{vhat}].{vhat}
+BMat[n_] := Table[b[i, j], {i, 1, n}, {j, 1, n}];
+
+Bend[V_, m_][i_] :=
+  Module[{sol, assignments, rest, l, others1, others2},
+   sol = Solve[BMat[m].(V[[;; m]]) == (V[[;; m]]).R[V[[m + i]]]][[1]];
+   assignments = Association[sol];
+   rest = Complement[Flatten[BMat[m]], Keys[assignments]];
+   l = Length[rest];
+   others1 = Solve[rest == Table[0, {j, 1, l}]][[1]];
+   others2 = <||>;
+   For[j = 1, j <= l, j++, others2[rest[[j]]] = Subscript[a, j]];
+   others2 = Normal[others2];
+   Column[{
+     MatrixForm[(BMat[m] /. assignments) /. others2],
+     MatrixForm[(BMat[m] /. assignments) /. others1]
+     }]
+   ];
+
+In[21]:= Everything[n_, FacesCW_, \[Epsilon]_: 0] := 
+ Module[{vertices, faces, f = Length[FacesCW], radii, d, h, LineFaces,
+    Vnye, Vout, bends = {}},
+  {vertices, faces, radii, d, h, LineFaces} = 
+   Packing[n, FacesCW, \[Epsilon]];
+  Vnye = SendToInt[\[Epsilon]] //@ 
+    RootApproximant[
+     SuperCluster[vertices, faces, radii, FacesCW[[LineFaces]], d, h, 
+      n]];
+  Vout = MatrixForm[Vnye];
+  bends = Bend[Vout[[1]], n] /@ Range@f;
+  Column[{
+    Render[radii, faces, vertices, FacesCW[[LineFaces]], n, d, h],
+    Graphics[{Thick, 
+      DrawCircle /@ Orbit[Vnye[[-f ;;]], Vnye[[;; n]], 8, 30], Red, 
+      DrawCircle /@ Vnye[[-f ;;]], Blue, DrawCircle /@ Vnye[[;; n]]}, 
+     PlotRange -> {{-d, 2 d}, {-1.2 Max[Values[radii]], 
+        h + 1.2 Max[Values[radii]]}}, PlotRangeClipping -> True],
+    Vout,
+    bends,
+    MatrixForm[RootApproximant[
+      SendToInt[\[Epsilon]] //@ 
+       Gram[SuperCluster[vertices, faces, radii, FacesCW[[LineFaces]],
+          d, h, n]]
+      ]]
+    }]]
+
+In[22]:= Orbit[co_, cl_, steps_, sizemax_: \[Infinity]] := 
+  Module[{i, j, k, orbit = cl, L},
+   For[i = 1, i <= steps, i++,
+    L = Length[orbit];
+    For[j = 1, j <= Length[co], j++,
+     For[k = 1, k <= L, k++,
+      If[(orbit[[k]].R[co[[j]]])[[2]] <= sizemax && ! 
+         MemberQ[orbit, orbit[[k]].R[co[[j]]](*new thing*)], 
+       AppendTo[orbit, orbit[[k]].R[co[[j]]](*newthing*)]]
+      ]
+     ]
+    ];
+   orbit
+   ];
+
+In[24]:= Everything[5, {{2, 1, 5}, {1, 4, 5}, {3, 5, 4}, {3, 2, 
+   5}, {2, 1, 4, 3}}, 1/100]
+
+Out[24]= \!\(
+TagBox[GridBox[{
+{
+GraphicsBox[
+{RGBColor[0, 0, 1], Thickness[
+        Large], {CircleBox[{0, 1.}], 
+         CircleBox[{1.414213562373095, 0.49999999999999994}, 0.5], 
+         CircleBox[{2.8284271247461903, 1.0000000000000002}, 
+          1.0000000000000002], 
+         LineBox[{{-1.4142135623730951`, 2.0000000000000004`}, {
+          4.242640687119285, 2.0000000000000004`}}], 
+         LineBox[{{-1.4142135623730951`, 0}, {
+           4.242640687119285, 0}}]}, 
+{RGBColor[1, 0, 0], Dashing[{Small, Small}], 
+         CircleBox[{0.7071067811865475, 0}, 0.7071067811865475], 
+         LineBox[{{0, -1.4142135623730951`}, {0, 3.414213562373096}}],
+          LineBox[{{2.82842712474619, -1.4142135623730951`}, {
+          2.82842712474619, 3.414213562373096}}], 
+         CircleBox[{2.1213203435596424, 0}, 0.7071067811865475], 
+         CircleBox[{1.4142135623730951, 2.}, 1.4142135623730951]}}]},
+{
+GraphicsBox[
+{Thickness[
+        Large], {CircleBox[{0, 1}], 
+         CircleBox[
+          NCache[{2^Rational[1, 2], Rational[1, 2]}, {
+           1.4142135623730951`, 0.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{2 2^Rational[1, 2], 1}, {2.8284271247461903`, 1}]], 
+TagBox[ConicHullRegionBox[{0, 2}, {{-1, 0}}],
+"InfiniteLine"], 
+TagBox[ConicHullRegionBox[{0, 0}, {{1, 0}}],
+"InfiniteLine"], 
+         CircleBox[
+          NCache[{Rational[2, 3] 2^Rational[1, 2], Rational[1, 9]}, {
+           0.9428090415820634, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{2^Rational[-1, 2], Rational[1, 8]}, {
+           0.7071067811865475, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[4, 3] 2^Rational[1, 2], Rational[1, 9]}, {
+           1.8856180831641267`, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{3 2^Rational[-1, 2], Rational[1, 8]}, {
+           2.1213203435596424`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{2^Rational[1, 2], Rational[3, 2]}, {
+           1.4142135623730951`, 1.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{-2^Rational[1, 2], Rational[
+            1, 2]}, {-1.4142135623730951`, 0.5}], NCache[
+          Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{(-2) 2^Rational[1, 2], 1}, {-2.8284271247461903`, 
+            1}]], CircleBox[
+          NCache[{4 2^Rational[1, 2], 1}, {5.656854249492381, 1}]], 
+         CircleBox[
+          NCache[{3 2^Rational[1, 2], Rational[1, 2]}, {
+           4.242640687119286, 0.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{Rational[4, 5] 2^Rational[1, 2], Rational[1, 25]}, {
+           1.1313708498984762`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[3, 5] 2^Rational[1, 2], Rational[3, 10]}, {
+           0.848528137423857, 0.3}], NCache[Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[1, 3] 2^Rational[1, 2], Rational[1, 18]}, {
+           0.4714045207910317, 0.05555555555555555}], NCache[
+          Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[2, 5] 2^Rational[1, 2], Rational[1, 25]}, {
+           0.5656854249492381, 0.04}], NCache[Rational[1, 25], 0.04]],
+          CircleBox[
+          NCache[{Rational[6, 5] 2^Rational[1, 2], Rational[1, 25]}, {
+           1.697056274847714, 0.04}], NCache[Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[7, 5] 2^Rational[1, 2], Rational[3, 10]}, {
+           1.9798989873223332`, 0.3}], NCache[Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[8, 5] 2^Rational[1, 2], Rational[1, 25]}, {
+           2.2627416997969525`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[5, 3] 2^Rational[1, 2], Rational[1, 18]}, {
+           2.3570226039551585`, 0.05555555555555555}], NCache[
+          Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[14, 17] 2^Rational[1, 2], 1}, {
+           1.1646464631307842`, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[3, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {1.0606601717798212`, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[20, 17] 2^Rational[1, 2], 1}, {
+           1.663780661615406, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[5, 2] 2^Rational[-1, 2], Rational[17, 16]},
+            {1.7677669529663687`, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[3, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {0.848528137423857, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[2, 3] 2^Rational[1, 2], Rational[17, 9]}, {
+           0.9428090415820634, 1.8888888888888888`}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[4, 3] 2^Rational[1, 2], Rational[17, 9]}, {
+           1.8856180831641267`, 1.8888888888888888`}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[7, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {1.9798989873223332`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-2, 3] 2^Rational[1, 2], Rational[
+            1, 9]}, {-0.9428090415820634, 0.1111111111111111}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{-2^Rational[-1, 2], Rational[
+            1, 8]}, {-0.7071067811865475, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-4, 3] 2^Rational[1, 2], Rational[
+            1, 9]}, {-1.8856180831641267`, 0.1111111111111111}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{(-3) 2^Rational[-1, 2], Rational[
+            1, 8]}, {-2.1213203435596424`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{-2^Rational[1, 2], Rational[
+            3, 2]}, {-1.4142135623730951`, 1.5}], NCache[
+          Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{(-4) 2^Rational[1, 2], 1}, {-5.656854249492381, 
+            1}]], CircleBox[
+          NCache[{(-3) 2^Rational[1, 2], Rational[
+            1, 2]}, {-4.242640687119286, 0.5}], NCache[
+          Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{Rational[10, 3] 2^Rational[1, 2], Rational[1, 9]}, {
+           4.714045207910317, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{7 2^Rational[-1, 2], Rational[1, 8]}, {
+           4.949747468305832, 0.125}], NCache[Rational[1, 8], 0.125]],
+          CircleBox[
+          NCache[{Rational[8, 3] 2^Rational[1, 2], Rational[1, 9]}, {
+           3.7712361663282534`, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{5 2^Rational[-1, 2], Rational[1, 8]}, {
+           3.5355339059327373`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{3 2^Rational[1, 2], Rational[3, 2]}, {
+           4.242640687119286, 1.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{5 2^Rational[1, 2], Rational[1, 2]}, {
+           7.0710678118654755`, 0.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{6 2^Rational[1, 2], 1}, {8.485281374238571, 1}]], 
+         CircleBox[
+          NCache[{Rational[5, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {0.5439282932204212, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[21, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {2.2844988315257693`, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[3, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {1.0606601717798212`, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[5, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {1.7677669529663687`, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{2^Rational[-1, 2], Rational[15, 8]}, {
+           0.7071067811865475, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[4, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {1.1313708498984762`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{3 2^Rational[-1, 2], Rational[15, 8]}, {
+           2.1213203435596424`, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[6, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {1.697056274847714, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-4, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-1.1313708498984762`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-3, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {-0.848528137423857, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-1, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {-0.4714045207910317, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-2, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-0.5656854249492381, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-6, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-1.697056274847714, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-7, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {-1.9798989873223332`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-8, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-2.2627416997969525`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-5, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {-2.3570226039551585`, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-14, 17] 2^Rational[1, 2], 
+            1}, {-1.1646464631307842`, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[-3, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {-1.0606601717798212`, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-20, 17] 2^Rational[1, 2], 
+            1}, {-1.663780661615406, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[-5, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {-1.7677669529663687`, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-3, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {-0.848528137423857, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-2, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {-0.9428090415820634, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[-4, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {-1.8856180831641267`, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[-7, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {-1.9798989873223332`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-10, 3] 2^Rational[1, 2], Rational[
+            1, 9]}, {-4.714045207910317, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{(-7) 2^Rational[-1, 2], Rational[
+            1, 8]}, {-4.949747468305832, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-8, 3] 2^Rational[1, 2], Rational[
+            1, 9]}, {-3.7712361663282534`, 0.1111111111111111}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{(-5) 2^Rational[-1, 2], Rational[
+            1, 8]}, {-3.5355339059327373`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{(-3) 2^Rational[1, 2], Rational[
+            3, 2]}, {-4.242640687119286, 1.5}], NCache[
+          Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{(-5) 2^Rational[1, 2], Rational[
+            1, 2]}, {-7.0710678118654755`, 0.5}], NCache[
+          Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{(-6) 2^Rational[1, 2], 1}, {-8.485281374238571, 
+            1}]], CircleBox[
+          NCache[{Rational[16, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {4.525483399593905, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[17, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {4.8083261120685235`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[11, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {5.185449728701348, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[18, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {5.091168824543143, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[14, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {3.9597979746446663`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[13, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {3.6769552621700474`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[12, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {3.394112549695428, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[7, 3] 2^Rational[1, 2], Rational[1, 18]}, {
+           3.299831645537222, 0.05555555555555555}], NCache[
+          Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[54, 17] 2^Rational[1, 2], 1}, {
+           4.492207786361596, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[13, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {4.596194077712559, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[48, 17] 2^Rational[1, 2], 1}, {
+           3.993073587876975, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[11, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {3.889087296526011, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[17, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {4.8083261120685235`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[10, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {4.714045207910317, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[8, 3] 2^Rational[1, 2], Rational[17, 9]}, {
+           3.7712361663282534`, 1.8888888888888888`}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[13, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {3.6769552621700474`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[14, 3] 2^Rational[1, 2], Rational[1, 9]}, {
+           6.599663291074444, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{9 2^Rational[-1, 2], Rational[1, 8]}, {
+           6.363961030678928, 0.125}], NCache[Rational[1, 8], 0.125]],
+          CircleBox[
+          NCache[{Rational[16, 3] 2^Rational[1, 2], Rational[1, 9]}, {
+           7.542472332656507, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{11 2^Rational[-1, 2], Rational[1, 8]}, {
+           7.778174593052022, 0.125}], NCache[Rational[1, 8], 0.125]],
+          CircleBox[
+          NCache[{5 2^Rational[1, 2], Rational[3, 2]}, {
+           7.0710678118654755`, 1.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{8 2^Rational[1, 2], 1}, {11.313708498984761`, 1}]], 
+         CircleBox[
+          NCache[{7 2^Rational[1, 2], Rational[1, 2]}, {
+           9.899494936611665, 0.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{Rational[5, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {0.5439282932204212, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[2, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {0.5656854249492381, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[8, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {2.2627416997969525`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[21, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {2.2844988315257693`, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-5, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {-0.5439282932204212, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-21, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {-2.2844988315257693`, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-3, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {-1.0606601717798212`, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-5, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {-1.7677669529663687`, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{-2^Rational[-1, 2], Rational[
+            15, 8]}, {-0.7071067811865475, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-4, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-1.1313708498984762`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{(-3) 2^Rational[-1, 2], Rational[
+            15, 8]}, {-2.1213203435596424`, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-6, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-1.697056274847714, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-16, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-4.525483399593905, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-17, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {-4.8083261120685235`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-11, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {-5.185449728701348, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-18, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-5.091168824543143, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          
+          NCache[{Rational[-14, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-3.9597979746446663`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-13, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {-3.6769552621700474`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-12, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-3.394112549695428, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-7, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {-3.299831645537222, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-54, 17] 2^Rational[1, 2], 
+            1}, {-4.492207786361596, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[-13, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {-4.596194077712559, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-48, 17] 2^Rational[1, 2], 
+            1}, {-3.993073587876975, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[-11, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {-3.889087296526011, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-17, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {-4.8083261120685235`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-10, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {-4.714045207910317, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[-8, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {-3.7712361663282534`, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[-13, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {-3.6769552621700474`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-14, 3] 2^Rational[1, 2], Rational[
+            1, 9]}, {-6.599663291074444, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{(-9) 2^Rational[-1, 2], Rational[
+            1, 8]}, {-6.363961030678928, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-16, 3] 2^Rational[1, 2], Rational[
+            1, 9]}, {-7.542472332656507, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{(-11) 2^Rational[-1, 2], Rational[
+            1, 8]}, {-7.778174593052022, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{(-5) 2^Rational[1, 2], Rational[
+            3, 2]}, {-7.0710678118654755`, 1.5}], NCache[
+          Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{(-8) 2^Rational[1, 2], 1}, {-11.313708498984761`, 
+            1}]], CircleBox[
+          NCache[{(-7) 2^Rational[1, 2], Rational[
+            1, 2]}, {-9.899494936611665, 0.5}], NCache[
+          Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{Rational[47, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {5.112925956271959, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[31, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {3.3723554179666113`, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[13, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {4.596194077712559, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[11, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {3.889087296526011, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{7 2^Rational[-1, 2], Rational[15, 8]}, {
+           4.949747468305832, 1.875}], NCache[Rational[1, 8], 0.125]],
+          CircleBox[
+          NCache[{Rational[16, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {4.525483399593905, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{5 2^Rational[-1, 2], Rational[15, 8]}, {
+           3.5355339059327373`, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[14, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {3.9597979746446663`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[24, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {6.788225099390856, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[23, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {6.505382386916237, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[13, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {6.128258770283412, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[22, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {6.222539674441619, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[26, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {7.353910524340095, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[27, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {7.636753236814714, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[28, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {7.919595949289333, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[17, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {8.01387685344754, 0.05555555555555555}], NCache[
+          Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[82, 17] 2^Rational[1, 2], 1}, {
+           6.821500712623164, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[19, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {6.717514421272201, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[88, 17] 2^Rational[1, 2], 1}, {
+           7.320634911107787, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[21, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {7.424621202458749, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[23, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {6.505382386916237, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[14, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {6.599663291074444, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[16, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {7.542472332656507, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[27, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {7.636753236814714, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[22, 3] 2^Rational[1, 2], Rational[1, 9]}, {
+           10.370899457402697`, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{15 2^Rational[-1, 2], Rational[1, 8]}, {
+           10.606601717798211`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[20, 3] 2^Rational[1, 2], Rational[1, 9]}, {
+           9.428090415820634, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{13 2^Rational[-1, 2], Rational[1, 8]}, {
+           9.192388155425117, 0.125}], NCache[Rational[1, 8], 0.125]],
+          CircleBox[
+          NCache[{7 2^Rational[1, 2], Rational[3, 2]}, {
+           9.899494936611665, 1.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{9 2^Rational[1, 2], Rational[1, 2]}, {
+           12.727922061357857`, 0.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{10 2^Rational[1, 2], 1}, {14.142135623730951`, 1}]],
+          CircleBox[
+          NCache[{Rational[1, 3] 2^Rational[1, 2], Rational[
+            35, 18]}, {0.4714045207910317, 1.9444444444444444`}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[5, 3] 2^Rational[1, 2], Rational[
+            35, 18]}, {2.3570226039551585`, 1.9444444444444444`}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-5, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {-0.5439282932204212, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-2, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-0.5656854249492381, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-8, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-2.2627416997969525`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-21, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {-2.2844988315257693`, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-47, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {-5.112925956271959, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-31, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {-3.3723554179666113`, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-13, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {-4.596194077712559, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-11, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {-3.889087296526011, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{(-7) 2^Rational[-1, 2], Rational[
+            15, 8]}, {-4.949747468305832, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-16, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-4.525483399593905, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{(-5) 2^Rational[-1, 2], Rational[
+            15, 8]}, {-3.5355339059327373`, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-14, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-3.9597979746446663`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-24, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-6.788225099390856, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-23, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {-6.505382386916237, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-13, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {-6.128258770283412, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          
+          NCache[{Rational[-22, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-6.222539674441619, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-26, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-7.353910524340095, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-27, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {-7.636753236814714, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-28, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-7.919595949289333, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-17, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {-8.01387685344754, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-82, 17] 2^Rational[1, 2], 
+            1}, {-6.821500712623164, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[-19, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {-6.717514421272201, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-88, 17] 2^Rational[1, 2], 
+            1}, {-7.320634911107787, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[-21, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {-7.424621202458749, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-23, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {-6.505382386916237, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-14, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {-6.599663291074444, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[-16, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {-7.542472332656507, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[-27, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {-7.636753236814714, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-22, 3] 2^Rational[1, 2], Rational[
+            1, 9]}, {-10.370899457402697`, 0.1111111111111111}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{(-15) 2^Rational[-1, 2], Rational[
+            1, 8]}, {-10.606601717798211`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-20, 3] 2^Rational[1, 2], Rational[
+            1, 9]}, {-9.428090415820634, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{(-13) 2^Rational[-1, 2], Rational[
+            1, 8]}, {-9.192388155425117, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{(-7) 2^Rational[1, 2], Rational[
+            3, 2]}, {-9.899494936611665, 1.5}], NCache[
+          Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{(-9) 2^Rational[1, 2], Rational[
+            1, 2]}, {-12.727922061357857`, 0.5}], NCache[
+          Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{(-10) 2^Rational[1, 2], 1}, {-14.142135623730951`, 
+            1}]], CircleBox[
+          NCache[{Rational[47, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {5.112925956271959, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[18, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {5.091168824543143, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[12, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {3.394112549695428, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[31, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {3.3723554179666113`, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[57, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {6.200782542712802, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[73, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {7.941353081018149, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[19, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {6.717514421272201, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[21, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {7.424621202458749, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{9 2^Rational[-1, 2], Rational[15, 8]}, {
+           6.363961030678928, 1.875}], NCache[Rational[1, 8], 0.125]],
+          CircleBox[
+          NCache[{Rational[24, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {6.788225099390856, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{11 2^Rational[-1, 2], Rational[15, 8]}, {
+           7.778174593052022, 1.875}], NCache[Rational[1, 8], 0.125]],
+          CircleBox[
+          NCache[{Rational[26, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {7.353910524340095, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[36, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {10.182337649086286`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[37, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {10.465180361560904`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[23, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {10.84230397819373, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[38, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {10.748023074035522`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[34, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {9.616652224137047, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[33, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {9.333809511662427, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[32, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {9.05096679918781, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[19, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {8.956685895029603, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[122, 17] 2^Rational[1, 2], 1}, {
+           10.149062035853976`, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[29, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {10.253048327204938`, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[116, 17] 2^Rational[1, 2], 1}, {
+           9.649927837369354, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[27, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {9.54594154601839, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[37, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {10.465180361560904`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[22, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {10.370899457402697`, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[20, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {9.428090415820634, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[33, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {9.333809511662427, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[26, 3] 2^Rational[1, 2], Rational[1, 9]}, {
+           12.256517540566824`, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{17 2^Rational[-1, 2], Rational[1, 8]}, {
+           12.020815280171307`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[28, 3] 2^Rational[1, 2], Rational[1, 9]}, {
+           13.199326582148888`, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{19 2^Rational[-1, 2], Rational[1, 8]}, {
+           13.435028842544401`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{9 2^Rational[1, 2], Rational[3, 2]}, {
+           12.727922061357857`, 1.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{12 2^Rational[1, 2], 1}, {16.970562748477143`, 1}]],
+          CircleBox[
+          NCache[{11 2^Rational[1, 2], Rational[1, 2]}, {
+           15.556349186104047`, 0.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{Rational[-1, 3] 2^Rational[1, 2], Rational[
+            35, 18]}, {-0.4714045207910317, 1.9444444444444444`}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-5, 3] 2^Rational[1, 2], Rational[
+            35, 18]}, {-2.3570226039551585`, 1.9444444444444444`}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-47, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {-5.112925956271959, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-18, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-5.091168824543143, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-12, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-3.394112549695428, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-31, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {-3.3723554179666113`, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-57, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {-6.200782542712802, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-73, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {-7.941353081018149, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-19, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {-6.717514421272201, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-21, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {-7.424621202458749, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{(-9) 2^Rational[-1, 2], Rational[
+            15, 8]}, {-6.363961030678928, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-24, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-6.788225099390856, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{(-11) 2^Rational[-1, 2], Rational[
+            15, 8]}, {-7.778174593052022, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-26, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-7.353910524340095, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-36, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-10.182337649086286`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-37, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {-10.465180361560904`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-23, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {-10.84230397819373, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-38, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-10.748023074035522`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-34, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-9.616652224137047, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-33, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {-9.333809511662427, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-32, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-9.05096679918781, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-19, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {-8.956685895029603, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-122, 17] 2^Rational[1, 2], 
+            1}, {-10.149062035853976`, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[-29, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {-10.253048327204938`, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-116, 17] 2^Rational[1, 2], 
+            1}, {-9.649927837369354, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[-27, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {-9.54594154601839, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-37, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {-10.465180361560904`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-22, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {-10.370899457402697`, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[-20, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {-9.428090415820634, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[-33, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {-9.333809511662427, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-26, 3] 2^Rational[1, 2], Rational[
+            1, 9]}, {-12.256517540566824`, 0.1111111111111111}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{(-17) 2^Rational[-1, 2], Rational[
+            1, 8]}, {-12.020815280171307`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-28, 3] 2^Rational[1, 2], Rational[
+            1, 9]}, {-13.199326582148888`, 0.1111111111111111}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{(-19) 2^Rational[-1, 2], Rational[
+            1, 8]}, {-13.435028842544401`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{(-9) 2^Rational[1, 2], Rational[
+            3, 2]}, {-12.727922061357857`, 1.5}], NCache[
+          Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{(-12) 2^Rational[1, 2], 1}, {-16.970562748477143`, 
+            1}]], CircleBox[
+          NCache[{(-11) 2^Rational[1, 2], Rational[
+            1, 2]}, {-15.556349186104047`, 0.5}], NCache[
+          Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{Rational[11, 3] 2^Rational[1, 2], Rational[
+            35, 18]}, {5.185449728701348, 1.9444444444444444`}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[7, 3] 2^Rational[1, 2], Rational[
+            35, 18]}, {3.299831645537222, 1.9444444444444444`}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[57, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {6.200782542712802, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[22, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {6.222539674441619, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[28, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {7.919595949289333, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[73, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {7.941353081018149, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[99, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {10.76978020576434, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[83, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {9.029209667458993, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[29, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {10.253048327204938`, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[27, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {9.54594154601839, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{15 2^Rational[-1, 2], Rational[15, 8]}, {
+           10.606601717798211`, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[36, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {10.182337649086286`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{13 2^Rational[-1, 2], Rational[15, 8]}, {
+           9.192388155425117, 1.875}], NCache[Rational[1, 8], 0.125]],
+          CircleBox[
+          NCache[{Rational[34, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {9.616652224137047, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[44, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {12.445079348883239`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[43, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {12.162236636408618`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[25, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {11.785113019775794`, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[42, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {11.879393923934, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[46, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {13.010764773832474`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[47, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {13.293607486307096`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[48, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {13.576450198781712`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[29, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {13.67073110293992, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[150, 17] 2^Rational[1, 2], 1}, {
+           12.478354962115546`, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[35, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {12.37436867076458, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[156, 17] 2^Rational[1, 2], 1}, {
+           12.977489160600166`, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[37, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {13.081475451951128`, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[43, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {12.162236636408618`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[26, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {12.256517540566824`, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[28, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {13.199326582148888`, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[47, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {13.293607486307096`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[34, 3] 2^Rational[1, 2], Rational[1, 9]}, {
+           16.02775370689508, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{23 2^Rational[-1, 2], Rational[1, 8]}, {
+           16.263455967290593`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[32, 3] 2^Rational[1, 2], Rational[1, 9]}, {
+           15.084944665313014`, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{21 2^Rational[-1, 2], Rational[1, 8]}, {
+           14.849242404917497`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{11 2^Rational[1, 2], Rational[3, 2]}, {
+           15.556349186104047`, 1.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{13 2^Rational[1, 2], Rational[1, 2]}, {
+           18.38477631085024, 0.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{14 2^Rational[1, 2], 1}, {19.79898987322333, 1}]], 
+         CircleBox[
+          NCache[{Rational[-11, 3] 2^Rational[1, 2], Rational[
+            35, 18]}, {-5.185449728701348, 1.9444444444444444`}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-7, 3] 2^Rational[1, 2], Rational[
+            35, 18]}, {-3.299831645537222, 1.9444444444444444`}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-57, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {-6.200782542712802, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-22, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-6.222539674441619, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-28, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-7.919595949289333, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-73, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {-7.941353081018149, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-99, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {-10.76978020576434, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-83, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {-9.029209667458993, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-29, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {-10.253048327204938`, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-27, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {-9.54594154601839, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{(-15) 2^Rational[-1, 2], Rational[
+            15, 8]}, {-10.606601717798211`, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-36, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-10.182337649086286`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{(-13) 2^Rational[-1, 2], Rational[
+            15, 8]}, {-9.192388155425117, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-34, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-9.616652224137047, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-44, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-12.445079348883239`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-43, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {-12.162236636408618`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-25, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {-11.785113019775794`, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-42, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-11.879393923934, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-46, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-13.010764773832474`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-47, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {-13.293607486307096`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-48, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-13.576450198781712`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-29, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {-13.67073110293992, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-150, 17] 2^Rational[1, 2], 
+            1}, {-12.478354962115546`, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[-35, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {-12.37436867076458, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-156, 17] 2^Rational[1, 2], 
+            1}, {-12.977489160600166`, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[-37, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {-13.081475451951128`, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-43, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {-12.162236636408618`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-26, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {-12.256517540566824`, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[-28, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {-13.199326582148888`, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[-47, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {-13.293607486307096`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-34, 3] 2^Rational[1, 2], Rational[
+            1, 9]}, {-16.02775370689508, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{(-23) 2^Rational[-1, 2], Rational[
+            1, 8]}, {-16.263455967290593`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-32, 3] 2^Rational[1, 2], Rational[
+            1, 9]}, {-15.084944665313014`, 0.1111111111111111}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{(-21) 2^Rational[-1, 2], Rational[
+            1, 8]}, {-14.849242404917497`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{(-11) 2^Rational[1, 2], Rational[
+            3, 2]}, {-15.556349186104047`, 1.5}], NCache[
+          Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{(-13) 2^Rational[1, 2], Rational[
+            1, 2]}, {-18.38477631085024, 0.5}], NCache[
+          Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{(-14) 2^Rational[1, 2], 1}, {-19.79898987322333, 
+            1}]], CircleBox[
+          NCache[{Rational[13, 3] 2^Rational[1, 2], Rational[
+            35, 18]}, {6.128258770283412, 1.9444444444444444`}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[17, 3] 2^Rational[1, 2], Rational[
+            35, 18]}, {8.01387685344754, 1.9444444444444444`}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[99, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {10.76978020576434, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[38, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {10.748023074035522`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[32, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {9.05096679918781, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[83, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {9.029209667458993, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[109, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {11.857636792205183`, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[125, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {13.59820733051053, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[35, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {12.37436867076458, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[37, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {13.081475451951128`, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{17 2^Rational[-1, 2], Rational[15, 8]}, {
+           12.020815280171307`, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[44, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {12.445079348883239`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{19 2^Rational[-1, 2], Rational[15, 8]}, {
+           13.435028842544401`, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[46, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {13.010764773832474`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[56, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {15.839191898578665`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[57, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {16.122034611053284`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[35, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {16.49915822768611, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[58, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {16.404877323527902`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[54, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {15.273506473629428`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[53, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {14.990663761154808`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[52, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {14.70782104868019, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[31, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {14.613540144521984`, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[190, 17] 2^Rational[1, 2], 1}, {
+           15.805916285346356`, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[45, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {15.909902576697318`, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[184, 17] 2^Rational[1, 2], 1}, {
+           15.306782086861736`, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[43, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {15.20279579551077, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[57, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {16.122034611053284`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[34, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {16.02775370689508, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[32, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {15.084944665313014`, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[53, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {14.990663761154808`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[38, 3] 2^Rational[1, 2], Rational[1, 9]}, {
+           17.913371790059205`, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{25 2^Rational[-1, 2], Rational[1, 8]}, {
+           17.677669529663685`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[40, 3] 2^Rational[1, 2], Rational[1, 9]}, {
+           18.856180831641268`, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{27 2^Rational[-1, 2], Rational[1, 8]}, {
+           19.09188309203678, 0.125}], NCache[Rational[1, 8], 0.125]],
+          CircleBox[
+          NCache[{13 2^Rational[1, 2], Rational[3, 2]}, {
+           18.38477631085024, 1.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{16 2^Rational[1, 2], 1}, {22.627416997969522`, 1}]],
+          CircleBox[
+          NCache[{15 2^Rational[1, 2], Rational[1, 2]}, {
+           21.213203435596427`, 0.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{Rational[-13, 3] 2^Rational[1, 2], Rational[
+            35, 18]}, {-6.128258770283412, 1.9444444444444444`}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-17, 3] 2^Rational[1, 2], Rational[
+            35, 18]}, {-8.01387685344754, 1.9444444444444444`}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-99, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {-10.76978020576434, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-38, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-10.748023074035522`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-32, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-9.05096679918781, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-83, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {-9.029209667458993, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-109, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {-11.857636792205183`, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-125, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {-13.59820733051053, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[-35, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {-12.37436867076458, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-37, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {-13.081475451951128`, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{(-17) 2^Rational[-1, 2], Rational[
+            15, 8]}, {-12.020815280171307`, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-44, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-12.445079348883239`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{(-19) 2^Rational[-1, 2], Rational[
+            15, 8]}, {-13.435028842544401`, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-46, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {-13.010764773832474`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-56, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-15.839191898578665`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-57, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {-16.122034611053284`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-35, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {-16.49915822768611, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-58, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-16.404877323527902`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-54, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-15.273506473629428`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-53, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {-14.990663761154808`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-52, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {-14.70782104868019, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[-31, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {-14.613540144521984`, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[-190, 17] 2^Rational[1, 2], 
+            1}, {-15.805916285346356`, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[-45, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {-15.909902576697318`, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-184, 17] 2^Rational[1, 2], 
+            1}, {-15.306782086861736`, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[-43, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {-15.20279579551077, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[-57, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {-16.122034611053284`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-34, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {-16.02775370689508, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[-32, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {-15.084944665313014`, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[-53, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {-14.990663761154808`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[-38, 3] 2^Rational[1, 2], Rational[
+            1, 9]}, {-17.913371790059205`, 0.1111111111111111}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{(-25) 2^Rational[-1, 2], Rational[
+            1, 8]}, {-17.677669529663685`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[-40, 3] 2^Rational[1, 2], Rational[
+            1, 9]}, {-18.856180831641268`, 0.1111111111111111}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{(-27) 2^Rational[-1, 2], Rational[
+            1, 8]}, {-19.09188309203678, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{(-13) 2^Rational[1, 2], Rational[
+            3, 2]}, {-18.38477631085024, 1.5}], NCache[
+          Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{(-16) 2^Rational[1, 2], 1}, {-22.627416997969522`, 
+            1}]], 
+         CircleBox[
+          NCache[{(-15) 2^Rational[1, 2], Rational[
+            1, 2]}, {-21.213203435596427`, 0.5}], NCache[
+          Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{Rational[23, 3] 2^Rational[1, 2], Rational[
+            35, 18]}, {10.84230397819373, 1.9444444444444444`}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[19, 3] 2^Rational[1, 2], Rational[
+            35, 18]}, {8.956685895029603, 1.9444444444444444`}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[109, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {11.857636792205183`, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[42, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {11.879393923934, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[48, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {13.576450198781712`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[125, 13] 2^Rational[1, 2], Rational[
+            49, 26]}, {13.59820733051053, 1.8846153846153846`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[151, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {16.42663445525672, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[135, 13] 2^Rational[1, 2], Rational[
+            3, 26]}, {14.686063916951372`, 0.11538461538461539`}], 
+          NCache[Rational[1, 26], 0.038461538461538464`]], 
+         CircleBox[
+          NCache[{Rational[45, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {15.909902576697318`, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[43, 2] 2^Rational[-1, 2], Rational[
+            15, 16]}, {15.20279579551077, 0.9375}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{23 2^Rational[-1, 2], Rational[15, 8]}, {
+           16.263455967290593`, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[56, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {15.839191898578665`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{21 2^Rational[-1, 2], Rational[15, 8]}, {
+           14.849242404917497`, 1.875}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[54, 5] 2^Rational[1, 2], Rational[
+            49, 25]}, {15.273506473629428`, 1.96}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[64, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {18.10193359837562, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[63, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {17.819090885900998`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[37, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {17.441967269268176`, 0.05555555555555555}], 
+          NCache[Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[62, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {17.53624817342638, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[66, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {18.667619023324853`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[67, 5] 2^Rational[1, 2], Rational[
+            3, 10]}, {18.950461735799475`, 0.3}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[68, 5] 2^Rational[1, 2], Rational[
+            1, 25]}, {19.233304448274094`, 0.04}], NCache[
+          Rational[1, 25], 0.04]], 
+         CircleBox[
+          NCache[{Rational[41, 3] 2^Rational[1, 2], Rational[
+            1, 18]}, {19.3275853524323, 0.05555555555555555}], NCache[
+          Rational[1, 18], 0.05555555555555555]], 
+         CircleBox[
+          NCache[{Rational[218, 17] 2^Rational[1, 2], 1}, {
+           18.135209211607926`, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[51, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {18.031222920256962`, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[224, 17] 2^Rational[1, 2], 1}, {
+           18.634343410092548`, 1}], NCache[
+          Rational[1, 17], 0.058823529411764705`]], 
+         CircleBox[
+          NCache[{Rational[53, 2] 2^Rational[-1, 2], Rational[
+            17, 16]}, {18.738329701443508`, 1.0625}], NCache[
+          Rational[1, 16], 0.0625]], 
+         CircleBox[
+          NCache[{Rational[63, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {17.819090885900998`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[38, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {17.913371790059205`, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[40, 3] 2^Rational[1, 2], Rational[
+            17, 9]}, {18.856180831641268`, 1.8888888888888888`}], 
+          NCache[Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{Rational[67, 5] 2^Rational[1, 2], Rational[
+            17, 10]}, {18.950461735799475`, 1.7}], NCache[
+          Rational[1, 10], 0.1]], 
+         CircleBox[
+          NCache[{Rational[46, 3] 2^Rational[1, 2], Rational[1, 9]}, {
+           21.68460795638746, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{31 2^Rational[-1, 2], Rational[1, 8]}, {
+           21.920310216782973`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{Rational[44, 3] 2^Rational[1, 2], Rational[1, 9]}, {
+           20.741798914805393`, 0.1111111111111111}], NCache[
+          Rational[1, 9], 0.1111111111111111]], 
+         CircleBox[
+          NCache[{29 2^Rational[-1, 2], Rational[1, 8]}, {
+           20.506096654409877`, 0.125}], NCache[
+          Rational[1, 8], 0.125]], 
+         CircleBox[
+          NCache[{15 2^Rational[1, 2], Rational[3, 2]}, {
+           21.213203435596427`, 1.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{17 2^Rational[1, 2], Rational[1, 2]}, {
+           24.041630560342618`, 0.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{18 2^Rational[1, 2], 1}, {
+           25.455844122715714`, 1}]]}, 
+{RGBColor[1, 0, 0], 
+         CircleBox[
+          NCache[{2^Rational[-1, 2], 0}, {0.7071067811865475, 0}], 
+          NCache[2^Rational[-1, 2], 0.7071067811865475]], 
+         CircleBox[
+          NCache[{3 2^Rational[-1, 2], 0}, {2.1213203435596424`, 0}], 
+          NCache[2^Rational[-1, 2], 0.7071067811865475]], 
+         CircleBox[
+          NCache[{2^Rational[1, 2], 2}, {1.4142135623730951`, 2}], 
+          NCache[2^Rational[1, 2], 1.4142135623730951`]], 
+TagBox[ConicHullRegionBox[{0, 0}, {{0, -1}}],
+"InfiniteLine"], 
+TagBox[ConicHullRegionBox[
+           NCache[{2 2^Rational[1, 2], 0}, {
+            2.8284271247461903`, 0}], {{0, 1}}],
+"InfiniteLine"]}, 
+{RGBColor[0, 0, 1], CircleBox[{0, 1}], 
+         CircleBox[
+          NCache[{2^Rational[1, 2], Rational[1, 2]}, {
+           1.4142135623730951`, 0.5}], NCache[Rational[1, 2], 0.5]], 
+         CircleBox[
+          NCache[{2 2^Rational[1, 2], 1}, {2.8284271247461903`, 1}]], 
+TagBox[ConicHullRegionBox[{0, 2}, {{-1, 0}}],
+"InfiniteLine"], 
+TagBox[ConicHullRegionBox[{0, 0}, {{1, 0}}],
+"InfiniteLine"]}},
+ImageSize->{353.6363636363635, Automatic},
+PlotRange->{{-2.82842712474619, 
+        5.65685424949238}, {-1.697056274847714, 3.6970562748477143`}},
+PlotRangeClipping->True]},
+{
+TagBox[
+RowBox[{"(", "", GridBox[{
+{"0", "1", "0", "1"},
+{"4", "2", 
+RowBox[{"2", " ", 
+SqrtBox["2"]}], "1"},
+{"8", "1", 
+RowBox[{"2", " ", 
+SqrtBox["2"]}], "1"},
+{"4", "0", "0", "1"},
+{"0", "0", "0", 
+RowBox[{"-", "1"}]},
+{"0", 
+SqrtBox["2"], "1", "0"},
+{
+RowBox[{"4", " ", 
+SqrtBox["2"]}], 
+SqrtBox["2"], "3", "0"},
+{
+RowBox[{"2", " ", 
+SqrtBox["2"]}], 
+FractionBox["1", 
+SqrtBox["2"]], "1", 
+SqrtBox["2"]},
+{"0", "0", 
+RowBox[{"-", "1"}], "0"},
+{
+RowBox[{"4", " ", 
+SqrtBox["2"]}], "0", "1", "0"}
+},
+GridBoxAlignment->{
+          "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+           "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+GridBoxSpacings->{"Columns" -> {
+Offset[0.27999999999999997`], {
+Offset[0.7]}, 
+Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+Offset[0.2], {
+Offset[0.4]}, 
+Offset[0.2]}, "RowsIndexed" -> {}}], "", ")"}],
+Function[BoxForm`e$, 
+MatrixForm[BoxForm`e$]]]},
+{
+RowBox[{"{", 
+RowBox[{
+TagBox[GridBox[{
+{
+TagBox[
+RowBox[{"(", "", GridBox[{
+{
+RowBox[{"1", "-", 
+SubscriptBox["a", "1"]}], 
+SubscriptBox["a", "1"], 
+RowBox[{"-", 
+SubscriptBox["a", "1"]}], 
+SubscriptBox["a", "1"], "0"},
+{
+RowBox[{"1", "-", 
+SubscriptBox["a", "2"]}], 
+SubscriptBox["a", "2"], 
+RowBox[{"1", "-", 
+SubscriptBox["a", "2"]}], 
+RowBox[{
+RowBox[{"-", "1"}], "+", 
+SubscriptBox["a", "2"]}], "0"},
+{
+RowBox[{"6", "-", 
+SubscriptBox["a", "3"]}], 
+SubscriptBox["a", "3"], 
+RowBox[{"3", "-", 
+SubscriptBox["a", "3"]}], 
+RowBox[{
+RowBox[{"-", "4"}], "+", 
+SubscriptBox["a", "3"]}], "4"},
+{
+RowBox[{"6", "-", 
+SubscriptBox["a", "4"]}], 
+SubscriptBox["a", "4"], 
+RowBox[{"2", "-", 
+SubscriptBox["a", "4"]}], 
+RowBox[{
+RowBox[{"-", "3"}], "+", 
+SubscriptBox["a", "4"]}], "4"},
+{
+RowBox[{"-", 
+SubscriptBox["a", "5"]}], 
+SubscriptBox["a", "5"], 
+RowBox[{"-", 
+SubscriptBox["a", "5"]}], 
+SubscriptBox["a", "5"], "1"}
+},
+GridBoxAlignment->{
+                "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+                 "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+GridBoxSpacings->{"Columns" -> {
+Offset[0.27999999999999997`], {
+Offset[0.7]}, 
+Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+Offset[0.2], {
+Offset[0.4]}, 
+Offset[0.2]}, "RowsIndexed" -> {}}], "", ")"}],
+Function[BoxForm`e$, 
+MatrixForm[BoxForm`e$]]]},
+{
+TagBox[
+RowBox[{"(", "", GridBox[{
+{"1", "0", "0", "0", "0"},
+{"1", "0", "1", 
+RowBox[{"-", "1"}], "0"},
+{"6", "0", "3", 
+RowBox[{"-", "4"}], "4"},
+{"6", "0", "2", 
+RowBox[{"-", "3"}], "4"},
+{"0", "0", "0", "0", "1"}
+},
+GridBoxAlignment->{
+                "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+                 "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+GridBoxSpacings->{"Columns" -> {
+Offset[0.27999999999999997`], {
+Offset[0.7]}, 
+Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+Offset[0.2], {
+Offset[0.4]}, 
+Offset[0.2]}, "RowsIndexed" -> {}}], "", ")"}],
+Function[BoxForm`e$, 
+MatrixForm[BoxForm`e$]]]}
+},
+DefaultBaseStyle->"Column",
+GridBoxAlignment->{
+           "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, 
+            "Rows" -> {}, "RowsIndexed" -> {}, "Items" -> {}, 
+            "ItemsIndexed" -> {}},
+GridBoxItemSize->{
+           "Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, 
+            "Rows" -> {{Automatic}}, "RowsIndexed" -> {}, 
+            "Items" -> {}, "ItemsIndexed" -> {}}],
+"Column"], ",", 
+TagBox[GridBox[{
+{
+TagBox[
+RowBox[{"(", "", GridBox[{
+{
+RowBox[{"3", "-", 
+SubscriptBox["a", "1"]}], 
+SubscriptBox["a", "1"], 
+RowBox[{"6", "-", 
+SubscriptBox["a", "1"]}], 
+RowBox[{
+RowBox[{"-", "4"}], "+", 
+SubscriptBox["a", "1"]}], "4"},
+{
+RowBox[{"1", "-", 
+SubscriptBox["a", "2"]}], 
+SubscriptBox["a", "2"], 
+RowBox[{"1", "-", 
+SubscriptBox["a", "2"]}], 
+RowBox[{
+RowBox[{"-", "1"}], "+", 
+SubscriptBox["a", "2"]}], "0"},
+{
+RowBox[{"-", 
+SubscriptBox["a", "3"]}], 
+SubscriptBox["a", "3"], 
+RowBox[{"1", "-", 
+SubscriptBox["a", "3"]}], 
+SubscriptBox["a", "3"], "0"},
+{
+RowBox[{"2", "-", 
+SubscriptBox["a", "4"]}], 
+SubscriptBox["a", "4"], 
+RowBox[{"6", "-", 
+SubscriptBox["a", "4"]}], 
+RowBox[{
+RowBox[{"-", "3"}], "+", 
+SubscriptBox["a", "4"]}], "4"},
+{
+RowBox[{"-", 
+SubscriptBox["a", "5"]}], 
+SubscriptBox["a", "5"], 
+RowBox[{"-", 
+SubscriptBox["a", "5"]}], 
+SubscriptBox["a", "5"], "1"}
+},
+GridBoxAlignment->{
+                "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+                 "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+GridBoxSpacings->{"Columns" -> {
+Offset[0.27999999999999997`], {
+Offset[0.7]}, 
+Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+Offset[0.2], {
+Offset[0.4]}, 
+Offset[0.2]}, "RowsIndexed" -> {}}], "", ")"}],
+Function[BoxForm`e$, 
+MatrixForm[BoxForm`e$]]]},
+{
+TagBox[
+RowBox[{"(", "", GridBox[{
+{"3", "0", "6", 
+RowBox[{"-", "4"}], "4"},
+{"1", "0", "1", 
+RowBox[{"-", "1"}], "0"},
+{"0", "0", "1", "0", "0"},
+{"2", "0", "6", 
+RowBox[{"-", "3"}], "4"},
+{"0", "0", "0", "0", "1"}
+},
+GridBoxAlignment->{
+                "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+                 "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+GridBoxSpacings->{"Columns" -> {
+Offset[0.27999999999999997`], {
+Offset[0.7]}, 
+Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+Offset[0.2], {
+Offset[0.4]}, 
+Offset[0.2]}, "RowsIndexed" -> {}}], "", ")"}],
+Function[BoxForm`e$, 
+MatrixForm[BoxForm`e$]]]}
+},
+DefaultBaseStyle->"Column",
+GridBoxAlignment->{
+           "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, 
+            "Rows" -> {}, "RowsIndexed" -> {}, "Items" -> {}, 
+            "ItemsIndexed" -> {}},
+GridBoxItemSize->{
+           "Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, 
+            "Rows" -> {{Automatic}}, "RowsIndexed" -> {}, 
+            "Items" -> {}, "ItemsIndexed" -> {}}],
+"Column"], ",", 
+TagBox[GridBox[{
+{
+TagBox[
+RowBox[{"(", "", GridBox[{
+{
+RowBox[{"1", "-", 
+SubscriptBox["a", "1"]}], 
+SubscriptBox["a", "1"], 
+RowBox[{"-", 
+SubscriptBox["a", "1"]}], 
+SubscriptBox["a", "1"], "0"},
+{
+RowBox[{"1", "-", 
+SubscriptBox["a", "2"]}], 
+SubscriptBox["a", "2"], 
+RowBox[{"1", "-", 
+SubscriptBox["a", "2"]}], 
+RowBox[{
+RowBox[{"-", "1"}], "+", 
+SubscriptBox["a", "2"]}], "0"},
+{
+RowBox[{"-", 
+SubscriptBox["a", "3"]}], 
+SubscriptBox["a", "3"], 
+RowBox[{"1", "-", 
+SubscriptBox["a", "3"]}], 
+SubscriptBox["a", "3"], "0"},
+{
+RowBox[{"-", 
+SubscriptBox["a", "4"]}], 
+SubscriptBox["a", "4"], 
+RowBox[{"-", 
+SubscriptBox["a", "4"]}], 
+RowBox[{"1", "+", 
+SubscriptBox["a", "4"]}], "0"},
+{
+RowBox[{"1", "-", 
+SubscriptBox["a", "5"]}], 
+SubscriptBox["a", "5"], 
+RowBox[{"1", "-", 
+SubscriptBox["a", "5"]}], 
+SubscriptBox["a", "5"], 
+RowBox[{"-", "1"}]}
+},
+GridBoxAlignment->{
+                "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+                 "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+GridBoxSpacings->{"Columns" -> {
+Offset[0.27999999999999997`], {
+Offset[0.7]}, 
+Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+Offset[0.2], {
+Offset[0.4]}, 
+Offset[0.2]}, "RowsIndexed" -> {}}], "", ")"}],
+Function[BoxForm`e$, 
+MatrixForm[BoxForm`e$]]]},
+{
+TagBox[
+RowBox[{"(", "", GridBox[{
+{"1", "0", "0", "0", "0"},
+{"1", "0", "1", 
+RowBox[{"-", "1"}], "0"},
+{"0", "0", "1", "0", "0"},
+{"0", "0", "0", "1", "0"},
+{"1", "0", "1", "0", 
+RowBox[{"-", "1"}]}
+},
+GridBoxAlignment->{
+                "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+                 "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+GridBoxSpacings->{"Columns" -> {
+Offset[0.27999999999999997`], {
+Offset[0.7]}, 
+Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+Offset[0.2], {
+Offset[0.4]}, 
+Offset[0.2]}, "RowsIndexed" -> {}}], "", ")"}],
+Function[BoxForm`e$, 
+MatrixForm[BoxForm`e$]]]}
+},
+DefaultBaseStyle->"Column",
+GridBoxAlignment->{
+           "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, 
+            "Rows" -> {}, "RowsIndexed" -> {}, "Items" -> {}, 
+            "ItemsIndexed" -> {}},
+GridBoxItemSize->{
+           "Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, 
+            "Rows" -> {{Automatic}}, "RowsIndexed" -> {}, 
+            "Items" -> {}, "ItemsIndexed" -> {}}],
+"Column"], ",", 
+TagBox[GridBox[{
+{
+TagBox[
+RowBox[{"(", "", GridBox[{
+{
+RowBox[{"1", "-", 
+SubscriptBox["a", "1"]}], 
+SubscriptBox["a", "1"], 
+RowBox[{"-", 
+SubscriptBox["a", "1"]}], 
+SubscriptBox["a", "1"], "0"},
+{
+RowBox[{"3", "-", 
+SubscriptBox["a", "2"]}], 
+SubscriptBox["a", "2"], 
+RowBox[{
+RowBox[{"-", "1"}], "-", 
+SubscriptBox["a", "2"]}], 
+RowBox[{"3", "+", 
+SubscriptBox["a", "2"]}], "4"},
+{
+RowBox[{"2", "-", 
+SubscriptBox["a", "3"]}], 
+SubscriptBox["a", "3"], 
+RowBox[{
+RowBox[{"-", "1"}], "-", 
+SubscriptBox["a", "3"]}], 
+RowBox[{"4", "+", 
+SubscriptBox["a", "3"]}], "4"},
+{
+RowBox[{"-", 
+SubscriptBox["a", "4"]}], 
+SubscriptBox["a", "4"], 
+RowBox[{"-", 
+SubscriptBox["a", "4"]}], 
+RowBox[{"1", "+", 
+SubscriptBox["a", "4"]}], "0"},
+{
+RowBox[{"-", 
+SubscriptBox["a", "5"]}], 
+SubscriptBox["a", "5"], 
+RowBox[{"-", 
+SubscriptBox["a", "5"]}], 
+SubscriptBox["a", "5"], "1"}
+},
+GridBoxAlignment->{
+                "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+                 "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+GridBoxSpacings->{"Columns" -> {
+Offset[0.27999999999999997`], {
+Offset[0.7]}, 
+Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+Offset[0.2], {
+Offset[0.4]}, 
+Offset[0.2]}, "RowsIndexed" -> {}}], "", ")"}],
+Function[BoxForm`e$, 
+MatrixForm[BoxForm`e$]]]},
+{
+TagBox[
+RowBox[{"(", "", GridBox[{
+{"1", "0", "0", "0", "0"},
+{"3", "0", 
+RowBox[{"-", "1"}], "3", "4"},
+{"2", "0", 
+RowBox[{"-", "1"}], "4", "4"},
+{"0", "0", "0", "1", "0"},
+{"0", "0", "0", "0", "1"}
+},
+GridBoxAlignment->{
+                "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+                 "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+GridBoxSpacings->{"Columns" -> {
+Offset[0.27999999999999997`], {
+Offset[0.7]}, 
+Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+Offset[0.2], {
+Offset[0.4]}, 
+Offset[0.2]}, "RowsIndexed" -> {}}], "", ")"}],
+Function[BoxForm`e$, 
+MatrixForm[BoxForm`e$]]]}
+},
+DefaultBaseStyle->"Column",
+GridBoxAlignment->{
+           "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, 
+            "Rows" -> {}, "RowsIndexed" -> {}, "Items" -> {}, 
+            "ItemsIndexed" -> {}},
+GridBoxItemSize->{
+           "Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, 
+            "Rows" -> {{Automatic}}, "RowsIndexed" -> {}, 
+            "Items" -> {}, "ItemsIndexed" -> {}}],
+"Column"], ",", 
+TagBox[GridBox[{
+{
+TagBox[
+RowBox[{"(", "", GridBox[{
+{
+RowBox[{
+RowBox[{"-", "1"}], "-", 
+SubscriptBox["a", "1"]}], 
+SubscriptBox["a", "1"], 
+RowBox[{"2", "-", 
+SubscriptBox["a", "1"]}], 
+RowBox[{"4", "+", 
+SubscriptBox["a", "1"]}], "4"},
+{
+RowBox[{
+RowBox[{"-", "1"}], "-", 
+SubscriptBox["a", "2"]}], 
+SubscriptBox["a", "2"], 
+RowBox[{"3", "-", 
+SubscriptBox["a", "2"]}], 
+RowBox[{"3", "+", 
+SubscriptBox["a", "2"]}], "4"},
+{
+RowBox[{"-", 
+SubscriptBox["a", "3"]}], 
+SubscriptBox["a", "3"], 
+RowBox[{"1", "-", 
+SubscriptBox["a", "3"]}], 
+SubscriptBox["a", "3"], "0"},
+{
+RowBox[{"-", 
+SubscriptBox["a", "4"]}], 
+SubscriptBox["a", "4"], 
+RowBox[{"-", 
+SubscriptBox["a", "4"]}], 
+RowBox[{"1", "+", 
+SubscriptBox["a", "4"]}], "0"},
+{
+RowBox[{"-", 
+SubscriptBox["a", "5"]}], 
+SubscriptBox["a", "5"], 
+RowBox[{"-", 
+SubscriptBox["a", "5"]}], 
+SubscriptBox["a", "5"], "1"}
+},
+GridBoxAlignment->{
+                "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+                 "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+GridBoxSpacings->{"Columns" -> {
+Offset[0.27999999999999997`], {
+Offset[0.7]}, 
+Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+Offset[0.2], {
+Offset[0.4]}, 
+Offset[0.2]}, "RowsIndexed" -> {}}], "", ")"}],
+Function[BoxForm`e$, 
+MatrixForm[BoxForm`e$]]]},
+{
+TagBox[
+RowBox[{"(", "", GridBox[{
+{
+RowBox[{"-", "1"}], "0", "2", "4", "4"},
+{
+RowBox[{"-", "1"}], "0", "3", "3", "4"},
+{"0", "0", "1", "0", "0"},
+{"0", "0", "0", "1", "0"},
+{"0", "0", "0", "0", "1"}
+},
+GridBoxAlignment->{
+                "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+                 "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+GridBoxSpacings->{"Columns" -> {
+Offset[0.27999999999999997`], {
+Offset[0.7]}, 
+Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+Offset[0.2], {
+Offset[0.4]}, 
+Offset[0.2]}, "RowsIndexed" -> {}}], "", ")"}],
+Function[BoxForm`e$, 
+MatrixForm[BoxForm`e$]]]}
+},
+DefaultBaseStyle->"Column",
+GridBoxAlignment->{
+           "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, 
+            "Rows" -> {}, "RowsIndexed" -> {}, "Items" -> {}, 
+            "ItemsIndexed" -> {}},
+GridBoxItemSize->{
+           "Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, 
+            "Rows" -> {{Automatic}}, "RowsIndexed" -> {}, 
+            "Items" -> {}, "ItemsIndexed" -> {}}],
+"Column"]}], "}"}]},
+{
+TagBox[
+RowBox[{"(", "", GridBox[{
+{
+RowBox[{"-", "1"}], "1", "3", "1", "1", "0", 
+RowBox[{"2", " ", 
+SqrtBox["2"]}], "0", "0", 
+RowBox[{"2", " ", 
+SqrtBox["2"]}]},
+{"1", "0", "1", "3", "1", "0", "0", "0", 
+RowBox[{"2", " ", 
+SqrtBox["2"]}], 
+RowBox[{"2", " ", 
+SqrtBox["2"]}]},
+{"3", "1", "0", "1", "1", 
+RowBox[{"2", " ", 
+SqrtBox["2"]}], "0", "0", 
+RowBox[{"2", " ", 
+SqrtBox["2"]}], 
+RowBox[{"-", "1"}]},
+{"1", "3", "1", 
+RowBox[{"-", "1"}], "1", 
+RowBox[{"2", " ", 
+SqrtBox["2"]}], 
+RowBox[{"2", " ", 
+SqrtBox["2"]}], "0", "0", "0"},
+{"1", "1", "1", "1", 
+RowBox[{"-", "1"}], "0", "0", 
+SqrtBox["2"], "0", "0"},
+{"0", "0", 
+RowBox[{"2", " ", 
+SqrtBox["2"]}], 
+RowBox[{"2", " ", 
+SqrtBox["2"]}], "0", 
+RowBox[{"-", "1"}], "1", "1", "1", "3"},
+{
+RowBox[{"2", " ", 
+SqrtBox["2"]}], "0", "0", 
+RowBox[{"2", " ", 
+SqrtBox["2"]}], "0", "1", 
+RowBox[{"-", "1"}], "1", "3", "1"},
+{"0", "0", "0", "0", 
+SqrtBox["2"], "1", "1", "0", "1", "1"},
+{"0", 
+RowBox[{"2", " ", 
+SqrtBox["2"]}], 
+RowBox[{"2", " ", 
+SqrtBox["2"]}], "0", "0", "1", "3", "1", 
+RowBox[{"-", "1"}], "1"},
+{
+RowBox[{"2", " ", 
+SqrtBox["2"]}], 
+RowBox[{"2", " ", 
+SqrtBox["2"]}], 
+RowBox[{"-", "1"}], "0", "0", "3", "1", "1", "1", 
+RowBox[{"-", "1"}]}
+},
+GridBoxAlignment->{
+          "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, 
+           "Rows" -> {{Baseline}}, "RowsIndexed" -> {}},
+GridBoxSpacings->{"Columns" -> {
+Offset[0.27999999999999997`], {
+Offset[0.7]}, 
+Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+Offset[0.2], {
+Offset[0.4]}, 
+Offset[0.2]}, "RowsIndexed" -> {}}], "", ")"}],
+Function[BoxForm`e$, 
+MatrixForm[BoxForm`e$]]]}
+},
+DefaultBaseStyle->"Column",
+GridBoxAlignment->{
+     "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {}, 
+      "RowsIndexed" -> {}, "Items" -> {}, "ItemsIndexed" -> {}},
+GridBoxItemSize->{
+     "Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, 
+      "Rows" -> {{Automatic}}, "RowsIndexed" -> {}, "Items" -> {}, 
+      "ItemsIndexed" -> {}}],
+"Column"]\)
+
+
+
+
+
+
+
+
+
+
+
