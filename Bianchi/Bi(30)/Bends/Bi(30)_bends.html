@@ -1,861 +1,548 @@
-<!DOCTYPE html>
-<html>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN"
+        "HTMLFiles/xhtml-math11-f.dtd">
 
+<!-- Created with the Wolfram Language for Students - Personal Use Only : www.wolfram.com -->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-
-<style>
-.content {
-	padding: 0 18px;
-	max-height: 0;
-	overflow: hidden;
-	transition: max-height 0.2s ease-out;
-	background-color: white;
-}
-table, th, td {
-	border:1px solid black;
-	border-collapse: collapse;
-}
-th, td {
-	padding: 5px;
-}
-th {
-	text-align: left;
-}
-td {
-	text-align: center;
-}
-img.resize1 {
-	max-width:75%;
-	max-height:75%;
-}
-h1 {
-	text-align: center;
-}
-</style>
-
-
+ <title>
+  Untitled (the Wolfram Language for Students - Personal Use Only : www.wolfram.com)
+ </title>
+ <link href="HTMLFiles/Bi(30)_bends.css" rel="stylesheet" type="text/css" />
 </head>
+
 <body>
 
-	<h2><center>Bi(30) Bend Matrices</center></h2>
-    
-<style type="text/css">
-.tg  {border-collapse:collapse;border-spacing:0;}
-.tg td{font-family:Arial, sans-serif;font-size:14px;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
-.tg th{font-family:Arial, sans-serif;font-size:14px;font-weight:normal;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal;border-color:black;}
-.tg .tg-9hbo{font-weight:bold;vertical-align:top}
-.tg .tg-yw4l{vertical-align:top}
-</style>
-<table class="tg">
-  <tr>
-    <th class="tg-9hbo"></th> <!--Blank-->
-    <th class="tg-9hbo">Integral?</th>
-    <th class="tg-9hbo">1</th>
-    <th class="tg-9hbo">2</th>
-    <th class="tg-9hbo">3</th>
-    <th class="tg-9hbo">4</th>
-    <th class="tg-9hbo">5</th>
-    <th class="tg-9hbo">6</th>
-    <th class="tg-9hbo">7</th>
-    <th class="tg-9hbo">8</th>
-    <th class="tg-9hbo">9</th>
-    <th class="tg-9hbo">10</th>
-  </tr>
-
-
-<tr>
-<td class="tg-9hbo">{1}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_1_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_1_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_1_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_1_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_1_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_1_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_1_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_1_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_1_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-<td class="tg-yw4l"><img src="bend_30_1_10.png" alt="Snow" \
-style="width:100%"></td> <!--10-->
-</tr>
-<tr>
-<td class="tg-9hbo">{3}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_3_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_3_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_3_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_3_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_3_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_3_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_3_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_3_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_3_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-<td class="tg-yw4l"><img src="bend_30_3_10.png" alt="Snow" \
-style="width:100%"></td> <!--10-->
-</tr>
-<tr>
-<td class="tg-9hbo">{4}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_4_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_4_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_4_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_4_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_4_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_4_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_4_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_4_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_4_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-<td class="tg-yw4l"><img src="bend_30_4_10.png" alt="Snow" \
-style="width:100%"></td> <!--10-->
-</tr>
-<tr>
-<td class="tg-9hbo">{8}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_8_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_8_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_8_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_8_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_8_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_8_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_8_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_8_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_8_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-<td class="tg-yw4l"><img src="bend_30_8_10.png" alt="Snow" \
-style="width:100%"></td> <!--10-->
-</tr>
-<tr>
-<td class="tg-9hbo">{9}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_9_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_9_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_9_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_9_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_9_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_9_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_9_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_9_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_9_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-<td class="tg-yw4l"><img src="bend_30_9_10.png" alt="Snow" \
-style="width:100%"></td> <!--10-->
-</tr>
-<tr>
-<td class="tg-9hbo">{10}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_10_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_10_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_10_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_10_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_10_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_10_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_10_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_10_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_10_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-<td class="tg-yw4l"><img src="bend_30_10_10.png" alt="Snow" \
-style="width:100%"></td> <!--10-->
-</tr>
-<tr>
-<td class="tg-9hbo">{11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_11_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_11_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-<td class="tg-yw4l"><img src="bend_30_11_10.png" alt="Snow" \
-style="width:100%"></td> <!--10-->
-</tr>
-<tr>
-<td class="tg-9hbo">{1, 9}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_1_9_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_1_9_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_1_9_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_1_9_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_1_9_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_1_9_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_1_9_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_1_9_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_1_9_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-</tr>
-<tr>
-<td class="tg-9hbo">{1, 10}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_1_10_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_1_10_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_1_10_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_1_10_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_1_10_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_1_10_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_1_10_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_1_10_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_1_10_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-</tr>
-<tr>
-<td class="tg-9hbo">{1, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_1_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_1_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_1_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_1_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_1_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_1_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_1_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_1_11_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_1_11_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-</tr>
-<tr>
-<td class="tg-9hbo">{3, 4}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_3_4_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_3_4_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_3_4_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_3_4_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_3_4_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_3_4_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_3_4_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_3_4_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_3_4_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-</tr>
-<tr>
-<td class="tg-9hbo">{3, 8}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_3_8_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_3_8_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_3_8_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_3_8_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_3_8_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_3_8_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_3_8_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_3_8_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_3_8_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-</tr>
-<tr>
-<td class="tg-9hbo">{3, 9}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_3_9_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_3_9_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_3_9_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_3_9_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_3_9_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_3_9_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_3_9_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_3_9_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_3_9_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-</tr>
-<tr>
-<td class="tg-9hbo">{3, 10}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_3_10_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_3_10_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_3_10_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_3_10_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_3_10_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_3_10_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_3_10_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_3_10_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_3_10_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-</tr>
-<tr>
-<td class="tg-9hbo">{3, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_3_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_3_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_3_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_3_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_3_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_3_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_3_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_3_11_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_3_11_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-</tr>
-<tr>
-<td class="tg-9hbo">{4, 8}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_4_8_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_4_8_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_4_8_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_4_8_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_4_8_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_4_8_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_4_8_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_4_8_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_4_8_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-</tr>
-<tr>
-<td class="tg-9hbo">{4, 9}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_4_9_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_4_9_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_4_9_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_4_9_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_4_9_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_4_9_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_4_9_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_4_9_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_4_9_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-</tr>
-<tr>
-<td class="tg-9hbo">{4, 10}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_4_10_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_4_10_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_4_10_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_4_10_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_4_10_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_4_10_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_4_10_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_4_10_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_4_10_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-</tr>
-<tr>
-<td class="tg-9hbo">{4, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_4_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_4_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_4_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_4_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_4_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_4_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_4_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_4_11_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_4_11_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-</tr>
-<tr>
-<td class="tg-9hbo">{8, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_8_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_8_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_8_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_8_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_8_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_8_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_8_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_8_11_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_8_11_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-</tr>
-<tr>
-<td class="tg-9hbo">{9, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_9_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_9_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_9_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_9_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_9_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_9_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_9_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_9_11_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_9_11_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-</tr>
-<tr>
-<td class="tg-9hbo">{10, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_10_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_10_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_10_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_10_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_10_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_10_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_10_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_10_11_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-<td class="tg-yw4l"><img src="bend_30_10_11_9.png" alt="Snow" \
-style="width:100%"></td> <!--9-->
-</tr>
-<tr>
-<td class="tg-9hbo">{1, 9, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_1_9_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_1_9_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_1_9_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_1_9_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_1_9_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_1_9_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_1_9_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_1_9_11_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-</tr>
-<tr>
-<td class="tg-9hbo">{1, 10, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_1_10_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_1_10_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_1_10_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_1_10_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_1_10_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_1_10_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_1_10_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_1_10_11_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-</tr>
-<tr>
-<td class="tg-9hbo">{3, 4, 8}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_3_4_8_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_3_4_8_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_3_4_8_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_3_4_8_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_3_4_8_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_3_4_8_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_3_4_8_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_3_4_8_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-</tr>
-<tr>
-<td class="tg-9hbo">{3, 4, 9}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_3_4_9_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_3_4_9_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_3_4_9_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_3_4_9_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_3_4_9_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_3_4_9_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_3_4_9_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_3_4_9_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-</tr>
-<tr>
-<td class="tg-9hbo">{3, 4, 10}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_3_4_10_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_3_4_10_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_3_4_10_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_3_4_10_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_3_4_10_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_3_4_10_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_3_4_10_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_3_4_10_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-</tr>
-<tr>
-<td class="tg-9hbo">{3, 4, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_3_4_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_3_4_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_3_4_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_3_4_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_3_4_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_3_4_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_3_4_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_3_4_11_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-</tr>
-<tr>
-<td class="tg-9hbo">{3, 8, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_3_8_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_3_8_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_3_8_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_3_8_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_3_8_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_3_8_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_3_8_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_3_8_11_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-</tr>
-<tr>
-<td class="tg-9hbo">{3, 9, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_3_9_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_3_9_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_3_9_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_3_9_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_3_9_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_3_9_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_3_9_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_3_9_11_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-</tr>
-<tr>
-<td class="tg-9hbo">{3, 10, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_3_10_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_3_10_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_3_10_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_3_10_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_3_10_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_3_10_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_3_10_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_3_10_11_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-</tr>
-<tr>
-<td class="tg-9hbo">{4, 8, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_4_8_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_4_8_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_4_8_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_4_8_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_4_8_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_4_8_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_4_8_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_4_8_11_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-</tr>
-<tr>
-<td class="tg-9hbo">{4, 9, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_4_9_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_4_9_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_4_9_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_4_9_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_4_9_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_4_9_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_4_9_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_4_9_11_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-</tr>
-<tr>
-<td class="tg-9hbo">{4, 10, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_4_10_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_4_10_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_4_10_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_4_10_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_4_10_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_4_10_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_4_10_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-<td class="tg-yw4l"><img src="bend_30_4_10_11_8.png" alt="Snow" \
-style="width:100%"></td> <!--8-->
-</tr>
-<tr>
-<td class="tg-9hbo">{3, 4, 8, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_3_4_8_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_3_4_8_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_3_4_8_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_3_4_8_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_3_4_8_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_3_4_8_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_3_4_8_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-</tr>
-<tr>
-<td class="tg-9hbo">{3, 4, 9, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_3_4_9_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_3_4_9_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_3_4_9_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_3_4_9_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_3_4_9_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_3_4_9_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_3_4_9_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-</tr>
-<tr>
-<td class="tg-9hbo">{3, 4, 10, 11}</td>
-<td class="tg-9hbo">No</td> <!--Integral?-->
-<td class="tg-yw4l"><img src="bend_30_3_4_10_11_1.png" alt="Snow" \
-style="width:100%"></td> <!--1-->
-<td class="tg-yw4l"><img src="bend_30_3_4_10_11_2.png" alt="Snow" \
-style="width:100%"></td> <!--2-->
-<td class="tg-yw4l"><img src="bend_30_3_4_10_11_3.png" alt="Snow" \
-style="width:100%"></td> <!--3-->
-<td class="tg-yw4l"><img src="bend_30_3_4_10_11_4.png" alt="Snow" \
-style="width:100%"></td> <!--4-->
-<td class="tg-yw4l"><img src="bend_30_3_4_10_11_5.png" alt="Snow" \
-style="width:100%"></td> <!--5-->
-<td class="tg-yw4l"><img src="bend_30_3_4_10_11_6.png" alt="Snow" \
-style="width:100%"></td> <!--6-->
-<td class="tg-yw4l"><img src="bend_30_3_4_10_11_7.png" alt="Snow" \
-style="width:100%"></td> <!--7-->
-</tr>
-
+<table class='Output' frame='box' rules='all'>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{1}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_1.gif" alt="Bi(30)_bends_1.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_2.gif" alt="Bi(30)_bends_2.gif" width="241" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_3.gif" alt="Bi(30)_bends_3.gif" width="259" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_4.gif" alt="Bi(30)_bends_4.gif" width="217" height="158" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_5.gif" alt="Bi(30)_bends_5.gif" width="277" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_6.gif" alt="Bi(30)_bends_6.gif" width="217" height="158" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_7.gif" alt="Bi(30)_bends_7.gif" width="217" height="158" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_8.gif" alt="Bi(30)_bends_8.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_9.gif" alt="Bi(30)_bends_9.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_10.gif" alt="Bi(30)_bends_10.gif" width="331" height="150" style="vertical-align:middle" /></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{3}</span></td>
+  <td style='text-align: center;'><span>Yes, it is integral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_11.gif" alt="Bi(30)_bends_11.gif" width="261" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_12.gif" alt="Bi(30)_bends_12.gif" width="261" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_13.gif" alt="Bi(30)_bends_13.gif" width="241" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_14.gif" alt="Bi(30)_bends_14.gif" width="259" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_15.gif" alt="Bi(30)_bends_15.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_16.gif" alt="Bi(30)_bends_16.gif" width="223" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_17.gif" alt="Bi(30)_bends_17.gif" width="277" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_18.gif" alt="Bi(30)_bends_18.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_19.gif" alt="Bi(30)_bends_19.gif" width="277" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_20.gif" alt="Bi(30)_bends_20.gif" width="277" height="150" style="vertical-align:middle" /></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{4}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_21.gif" alt="Bi(30)_bends_21.gif" width="261" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_22.gif" alt="Bi(30)_bends_22.gif" width="250" height="158" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_23.gif" alt="Bi(30)_bends_23.gif" width="241" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_24.gif" alt="Bi(30)_bends_24.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_25.gif" alt="Bi(30)_bends_25.gif" width="277" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_26.gif" alt="Bi(30)_bends_26.gif" width="241" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_27.gif" alt="Bi(30)_bends_27.gif" width="241" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_28.gif" alt="Bi(30)_bends_28.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_29.gif" alt="Bi(30)_bends_29.gif" width="241" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_30.gif" alt="Bi(30)_bends_30.gif" width="277" height="150" style="vertical-align:middle" /></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{8}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_31.gif" alt="Bi(30)_bends_31.gif" width="236" height="160" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_32.gif" alt="Bi(30)_bends_32.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_33.gif" alt="Bi(30)_bends_33.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_34.gif" alt="Bi(30)_bends_34.gif" width="217" height="160" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_35.gif" alt="Bi(30)_bends_35.gif" width="235" height="160" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_36.gif" alt="Bi(30)_bends_36.gif" width="249" height="186" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_37.gif" alt="Bi(30)_bends_37.gif" width="236" height="168" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_38.gif" alt="Bi(30)_bends_38.gif" width="248" height="160" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_39.gif" alt="Bi(30)_bends_39.gif" width="248" height="160" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_40.gif" alt="Bi(30)_bends_40.gif" width="314" height="178" style="vertical-align:middle" /></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{9}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_41.gif" alt="Bi(30)_bends_41.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_42.gif" alt="Bi(30)_bends_42.gif" width="262" height="160" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_43.gif" alt="Bi(30)_bends_43.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_44.gif" alt="Bi(30)_bends_44.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_45.gif" alt="Bi(30)_bends_45.gif" width="268" height="186" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_46.gif" alt="Bi(30)_bends_46.gif" width="266" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_47.gif" alt="Bi(30)_bends_47.gif" width="248" height="158" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_48.gif" alt="Bi(30)_bends_48.gif" width="248" height="158" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_49.gif" alt="Bi(30)_bends_49.gif" width="265" height="160" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_50.gif" alt="Bi(30)_bends_50.gif" width="277" height="150" style="vertical-align:middle" /></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{10}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_51.gif" alt="Bi(30)_bends_51.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_52.gif" alt="Bi(30)_bends_52.gif" width="249" height="160" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_53.gif" alt="Bi(30)_bends_53.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_54.gif" alt="Bi(30)_bends_54.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_55.gif" alt="Bi(30)_bends_55.gif" width="223" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_56.gif" alt="Bi(30)_bends_56.gif" width="280" height="186" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_57.gif" alt="Bi(30)_bends_57.gif" width="280" height="186" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_58.gif" alt="Bi(30)_bends_58.gif" width="241" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_59.gif" alt="Bi(30)_bends_59.gif" width="248" height="160" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_60.gif" alt="Bi(30)_bends_60.gif" width="277" height="150" style="vertical-align:middle" /></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_61.gif" alt="Bi(30)_bends_61.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_62.gif" alt="Bi(30)_bends_62.gif" width="249" height="160" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_63.gif" alt="Bi(30)_bends_63.gif" width="217" height="158" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_64.gif" alt="Bi(30)_bends_64.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_65.gif" alt="Bi(30)_bends_65.gif" width="230" height="158" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_66.gif" alt="Bi(30)_bends_66.gif" width="259" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_67.gif" alt="Bi(30)_bends_67.gif" width="259" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_68.gif" alt="Bi(30)_bends_68.gif" width="291" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_69.gif" alt="Bi(30)_bends_69.gif" width="273" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_70.gif" alt="Bi(30)_bends_70.gif" width="273" height="182" style="vertical-align:middle" /></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{1, 9}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_71.gif" alt="Bi(30)_bends_71.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_72.gif" alt="Bi(30)_bends_72.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_73.gif" alt="Bi(30)_bends_73.gif" width="359" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_74.gif" alt="Bi(30)_bends_74.gif" width="439" height="192" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_75.gif" alt="Bi(30)_bends_75.gif" width="453" height="192" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_76.gif" alt="Bi(30)_bends_76.gif" width="455" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_77.gif" alt="Bi(30)_bends_77.gif" width="378" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_78.gif" alt="Bi(30)_bends_78.gif" width="437" height="188" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_79.gif" alt="Bi(30)_bends_79.gif" width="460" height="196" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{1, 10}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_80.gif" alt="Bi(30)_bends_80.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_81.gif" alt="Bi(30)_bends_81.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_82.gif" alt="Bi(30)_bends_82.gif" width="359" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_83.gif" alt="Bi(30)_bends_83.gif" width="321" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_84.gif" alt="Bi(30)_bends_84.gif" width="453" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_85.gif" alt="Bi(30)_bends_85.gif" width="436" height="184" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_86.gif" alt="Bi(30)_bends_86.gif" width="378" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_87.gif" alt="Bi(30)_bends_87.gif" width="417" height="188" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_88.gif" alt="Bi(30)_bends_88.gif" width="467" height="196" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{1, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_89.gif" alt="Bi(30)_bends_89.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_90.gif" alt="Bi(30)_bends_90.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_91.gif" alt="Bi(30)_bends_91.gif" width="371" height="176" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_92.gif" alt="Bi(30)_bends_92.gif" width="475" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_93.gif" alt="Bi(30)_bends_93.gif" width="473" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_94.gif" alt="Bi(30)_bends_94.gif" width="475" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_95.gif" alt="Bi(30)_bends_95.gif" width="492" height="194" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_96.gif" alt="Bi(30)_bends_96.gif" width="511" height="206" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_97.gif" alt="Bi(30)_bends_97.gif" width="511" height="206" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{3, 4}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_98.gif" alt="Bi(30)_bends_98.gif" width="261" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_99.gif" alt="Bi(30)_bends_99.gif" width="250" height="158" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_100.gif" alt="Bi(30)_bends_100.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_101.gif" alt="Bi(30)_bends_101.gif" width="259" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_102.gif" alt="Bi(30)_bends_102.gif" width="241" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_103.gif" alt="Bi(30)_bends_103.gif" width="223" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_104.gif" alt="Bi(30)_bends_104.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_105.gif" alt="Bi(30)_bends_105.gif" width="223" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_106.gif" alt="Bi(30)_bends_106.gif" width="295" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{3, 8}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_107.gif" alt="Bi(30)_bends_107.gif" width="263" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_108.gif" alt="Bi(30)_bends_108.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_109.gif" alt="Bi(30)_bends_109.gif" width="341" height="196" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_110.gif" alt="Bi(30)_bends_110.gif" width="322" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_111.gif" alt="Bi(30)_bends_111.gif" width="382" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_112.gif" alt="Bi(30)_bends_112.gif" width="374" height="190" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_113.gif" alt="Bi(30)_bends_113.gif" width="341" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_114.gif" alt="Bi(30)_bends_114.gif" width="377" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_115.gif" alt="Bi(30)_bends_115.gif" width="495" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{3, 9}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_116.gif" alt="Bi(30)_bends_116.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_117.gif" alt="Bi(30)_bends_117.gif" width="289" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_118.gif" alt="Bi(30)_bends_118.gif" width="307" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_119.gif" alt="Bi(30)_bends_119.gif" width="399" height="212" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_120.gif" alt="Bi(30)_bends_120.gif" width="417" height="210" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_121.gif" alt="Bi(30)_bends_121.gif" width="307" height="176" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_122.gif" alt="Bi(30)_bends_122.gif" width="359" height="176" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_123.gif" alt="Bi(30)_bends_123.gif" width="454" height="188" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_124.gif" alt="Bi(30)_bends_124.gif" width="472" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{3, 10}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_125.gif" alt="Bi(30)_bends_125.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_126.gif" alt="Bi(30)_bends_126.gif" width="289" height="172" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_127.gif" alt="Bi(30)_bends_127.gif" width="359" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_128.gif" alt="Bi(30)_bends_128.gif" width="289" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_129.gif" alt="Bi(30)_bends_129.gif" width="461" height="240" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_130.gif" alt="Bi(30)_bends_130.gif" width="443" height="226" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_131.gif" alt="Bi(30)_bends_131.gif" width="359" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_132.gif" alt="Bi(30)_bends_132.gif" width="436" height="188" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_133.gif" alt="Bi(30)_bends_133.gif" width="490" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{3, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_134.gif" alt="Bi(30)_bends_134.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_135.gif" alt="Bi(30)_bends_135.gif" width="289" height="172" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_136.gif" alt="Bi(30)_bends_136.gif" width="271" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_137.gif" alt="Bi(30)_bends_137.gif" width="425" height="190" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_138.gif" alt="Bi(30)_bends_138.gif" width="289" height="196" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_139.gif" alt="Bi(30)_bends_139.gif" width="289" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_140.gif" alt="Bi(30)_bends_140.gif" width="441" height="198" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_141.gif" alt="Bi(30)_bends_141.gif" width="400" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_142.gif" alt="Bi(30)_bends_142.gif" width="436" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{4, 8}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_143.gif" alt="Bi(30)_bends_143.gif" width="263" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_144.gif" alt="Bi(30)_bends_144.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_145.gif" alt="Bi(30)_bends_145.gif" width="271" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_146.gif" alt="Bi(30)_bends_146.gif" width="348" height="188" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_147.gif" alt="Bi(30)_bends_147.gif" width="418" height="190" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_148.gif" alt="Bi(30)_bends_148.gif" width="374" height="190" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_149.gif" alt="Bi(30)_bends_149.gif" width="341" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_150.gif" alt="Bi(30)_bends_150.gif" width="341" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_151.gif" alt="Bi(30)_bends_151.gif" width="495" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{4, 9}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_152.gif" alt="Bi(30)_bends_152.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_153.gif" alt="Bi(30)_bends_153.gif" width="289" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_154.gif" alt="Bi(30)_bends_154.gif" width="307" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_155.gif" alt="Bi(30)_bends_155.gif" width="399" height="240" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_156.gif" alt="Bi(30)_bends_156.gif" width="410" height="192" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_157.gif" alt="Bi(30)_bends_157.gif" width="365" height="184" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_158.gif" alt="Bi(30)_bends_158.gif" width="365" height="184" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_159.gif" alt="Bi(30)_bends_159.gif" width="436" height="188" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_160.gif" alt="Bi(30)_bends_160.gif" width="472" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{4, 10}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_161.gif" alt="Bi(30)_bends_161.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_162.gif" alt="Bi(30)_bends_162.gif" width="289" height="172" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_163.gif" alt="Bi(30)_bends_163.gif" width="307" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_164.gif" alt="Bi(30)_bends_164.gif" width="289" height="206" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_165.gif" alt="Bi(30)_bends_165.gif" width="479" height="202" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_166.gif" alt="Bi(30)_bends_166.gif" width="451" height="250" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_167.gif" alt="Bi(30)_bends_167.gif" width="327" height="206" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_168.gif" alt="Bi(30)_bends_168.gif" width="436" height="188" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_169.gif" alt="Bi(30)_bends_169.gif" width="490" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{4, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_170.gif" alt="Bi(30)_bends_170.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_171.gif" alt="Bi(30)_bends_171.gif" width="289" height="172" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_172.gif" alt="Bi(30)_bends_172.gif" width="323" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_173.gif" alt="Bi(30)_bends_173.gif" width="413" height="222" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_174.gif" alt="Bi(30)_bends_174.gif" width="289" height="158" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_175.gif" alt="Bi(30)_bends_175.gif" width="333" height="206" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_176.gif" alt="Bi(30)_bends_176.gif" width="451" height="222" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_177.gif" alt="Bi(30)_bends_177.gif" width="400" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_178.gif" alt="Bi(30)_bends_178.gif" width="418" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{8, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_179.gif" alt="Bi(30)_bends_179.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_180.gif" alt="Bi(30)_bends_180.gif" width="205" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_181.gif" alt="Bi(30)_bends_181.gif" width="297" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_182.gif" alt="Bi(30)_bends_182.gif" width="250" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_183.gif" alt="Bi(30)_bends_183.gif" width="247" height="158" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_184.gif" alt="Bi(30)_bends_184.gif" width="217" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_185.gif" alt="Bi(30)_bends_185.gif" width="237" height="158" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_186.gif" alt="Bi(30)_bends_186.gif" width="248" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_187.gif" alt="Bi(30)_bends_187.gif" width="266" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{9, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_188.gif" alt="Bi(30)_bends_188.gif" width="289" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_189.gif" alt="Bi(30)_bends_189.gif" width="285" height="180" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_190.gif" alt="Bi(30)_bends_190.gif" width="341" height="172" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_191.gif" alt="Bi(30)_bends_191.gif" width="366" height="204" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_192.gif" alt="Bi(30)_bends_192.gif" width="452" height="238" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_193.gif" alt="Bi(30)_bends_193.gif" width="338" height="190" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_194.gif" alt="Bi(30)_bends_194.gif" width="300" height="158" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_195.gif" alt="Bi(30)_bends_195.gif" width="418" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_196.gif" alt="Bi(30)_bends_196.gif" width="436" height="202" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{10, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_197.gif" alt="Bi(30)_bends_197.gif" width="289" height="172" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_198.gif" alt="Bi(30)_bends_198.gif" width="279" height="180" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_199.gif" alt="Bi(30)_bends_199.gif" width="341" height="172" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_200.gif" alt="Bi(30)_bends_200.gif" width="405" height="212" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_201.gif" alt="Bi(30)_bends_201.gif" width="357" height="176" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_202.gif" alt="Bi(30)_bends_202.gif" width="359" height="216" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_203.gif" alt="Bi(30)_bends_203.gif" width="347" height="216" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_204.gif" alt="Bi(30)_bends_204.gif" width="366" height="172" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_205.gif" alt="Bi(30)_bends_205.gif" width="386" height="208" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{1, 9, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_206.gif" alt="Bi(30)_bends_206.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_207.gif" alt="Bi(30)_bends_207.gif" width="481" height="186" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_208.gif" alt="Bi(30)_bends_208.gif" width="445" height="186" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_209.gif" alt="Bi(30)_bends_209.gif" width="457" height="204" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_210.gif" alt="Bi(30)_bends_210.gif" width="363" height="176" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_211.gif" alt="Bi(30)_bends_211.gif" width="282" height="168" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_212.gif" alt="Bi(30)_bends_212.gif" width="370" height="176" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_213.gif" alt="Bi(30)_bends_213.gif" width="502" height="194" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{1, 10, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_214.gif" alt="Bi(30)_bends_214.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_215.gif" alt="Bi(30)_bends_215.gif" width="449" height="184" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_216.gif" alt="Bi(30)_bends_216.gif" width="449" height="184" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_217.gif" alt="Bi(30)_bends_217.gif" width="430" height="184" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_218.gif" alt="Bi(30)_bends_218.gif" width="449" height="184" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_219.gif" alt="Bi(30)_bends_219.gif" width="423" height="184" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_220.gif" alt="Bi(30)_bends_220.gif" width="430" height="184" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_221.gif" alt="Bi(30)_bends_221.gif" width="456" height="202" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{3, 4, 8}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_222.gif" alt="Bi(30)_bends_222.gif" width="289" height="172" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_223.gif" alt="Bi(30)_bends_223.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_224.gif" alt="Bi(30)_bends_224.gif" width="348" height="180" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_225.gif" alt="Bi(30)_bends_225.gif" width="382" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_226.gif" alt="Bi(30)_bends_226.gif" width="330" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_227.gif" alt="Bi(30)_bends_227.gif" width="323" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_228.gif" alt="Bi(30)_bends_228.gif" width="323" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_229.gif" alt="Bi(30)_bends_229.gif" width="477" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{3, 4, 9}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_230.gif" alt="Bi(30)_bends_230.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_231.gif" alt="Bi(30)_bends_231.gif" width="289" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_232.gif" alt="Bi(30)_bends_232.gif" width="425" height="212" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_233.gif" alt="Bi(30)_bends_233.gif" width="417" height="194" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_234.gif" alt="Bi(30)_bends_234.gif" width="295" height="184" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_235.gif" alt="Bi(30)_bends_235.gif" width="333" height="184" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_236.gif" alt="Bi(30)_bends_236.gif" width="436" height="188" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_237.gif" alt="Bi(30)_bends_237.gif" width="454" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{3, 4, 10}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_238.gif" alt="Bi(30)_bends_238.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_239.gif" alt="Bi(30)_bends_239.gif" width="341" height="172" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_240.gif" alt="Bi(30)_bends_240.gif" width="277" height="178" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_241.gif" alt="Bi(30)_bends_241.gif" width="461" height="218" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_242.gif" alt="Bi(30)_bends_242.gif" width="425" height="246" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_243.gif" alt="Bi(30)_bends_243.gif" width="315" height="202" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_244.gif" alt="Bi(30)_bends_244.gif" width="436" height="188" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_245.gif" alt="Bi(30)_bends_245.gif" width="472" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{3, 4, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_246.gif" alt="Bi(30)_bends_246.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_247.gif" alt="Bi(30)_bends_247.gif" width="341" height="172" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_248.gif" alt="Bi(30)_bends_248.gif" width="395" height="194" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_249.gif" alt="Bi(30)_bends_249.gif" width="289" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_250.gif" alt="Bi(30)_bends_250.gif" width="289" height="202" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_251.gif" alt="Bi(30)_bends_251.gif" width="433" height="218" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_252.gif" alt="Bi(30)_bends_252.gif" width="400" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_253.gif" alt="Bi(30)_bends_253.gif" width="418" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{3, 8, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_254.gif" alt="Bi(30)_bends_254.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_255.gif" alt="Bi(30)_bends_255.gif" width="299" height="192" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_256.gif" alt="Bi(30)_bends_256.gif" width="387" height="232" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_257.gif" alt="Bi(30)_bends_257.gif" width="302" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_258.gif" alt="Bi(30)_bends_258.gif" width="348" height="186" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_259.gif" alt="Bi(30)_bends_259.gif" width="310" height="178" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_260.gif" alt="Bi(30)_bends_260.gif" width="374" height="194" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_261.gif" alt="Bi(30)_bends_261.gif" width="407" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{3, 9, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_262.gif" alt="Bi(30)_bends_262.gif" width="289" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_263.gif" alt="Bi(30)_bends_263.gif" width="334" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_264.gif" alt="Bi(30)_bends_264.gif" width="358" height="196" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_265.gif" alt="Bi(30)_bends_265.gif" width="443" height="202" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_266.gif" alt="Bi(30)_bends_266.gif" width="370" height="208" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_267.gif" alt="Bi(30)_bends_267.gif" width="325" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_268.gif" alt="Bi(30)_bends_268.gif" width="383" height="206" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_269.gif" alt="Bi(30)_bends_269.gif" width="436" height="202" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{3, 10, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_270.gif" alt="Bi(30)_bends_270.gif" width="289" height="172" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_271.gif" alt="Bi(30)_bends_271.gif" width="289" height="186" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_272.gif" alt="Bi(30)_bends_272.gif" width="375" height="218" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_273.gif" alt="Bi(30)_bends_273.gif" width="400" height="172" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_274.gif" alt="Bi(30)_bends_274.gif" width="434" height="218" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_275.gif" alt="Bi(30)_bends_275.gif" width="357" height="218" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_276.gif" alt="Bi(30)_bends_276.gif" width="366" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_277.gif" alt="Bi(30)_bends_277.gif" width="409" height="204" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{4, 8, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_278.gif" alt="Bi(30)_bends_278.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_279.gif" alt="Bi(30)_bends_279.gif" width="282" height="186" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_280.gif" alt="Bi(30)_bends_280.gif" width="407" height="208" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_281.gif" alt="Bi(30)_bends_281.gif" width="427" height="190" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_282.gif" alt="Bi(30)_bends_282.gif" width="217" height="158" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_283.gif" alt="Bi(30)_bends_283.gif" width="277" height="178" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_284.gif" alt="Bi(30)_bends_284.gif" width="374" height="194" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_285.gif" alt="Bi(30)_bends_285.gif" width="451" height="184" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{4, 9, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_286.gif" alt="Bi(30)_bends_286.gif" width="289" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_287.gif" alt="Bi(30)_bends_287.gif" width="367" height="182" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_288.gif" alt="Bi(30)_bends_288.gif" width="436" height="196" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_289.gif" alt="Bi(30)_bends_289.gif" width="469" height="226" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_290.gif" alt="Bi(30)_bends_290.gif" width="268" height="176" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_291.gif" alt="Bi(30)_bends_291.gif" width="351" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_292.gif" alt="Bi(30)_bends_292.gif" width="383" height="196" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_293.gif" alt="Bi(30)_bends_293.gif" width="472" height="188" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{4, 10, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_294.gif" alt="Bi(30)_bends_294.gif" width="289" height="172" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_295.gif" alt="Bi(30)_bends_295.gif" width="341" height="186" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_296.gif" alt="Bi(30)_bends_296.gif" width="427" height="238" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_297.gif" alt="Bi(30)_bends_297.gif" width="460" height="204" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_298.gif" alt="Bi(30)_bends_298.gif" width="341" height="194" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_299.gif" alt="Bi(30)_bends_299.gif" width="433" height="226" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_300.gif" alt="Bi(30)_bends_300.gif" width="412" height="204" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_301.gif" alt="Bi(30)_bends_301.gif" width="409" height="202" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{3, 4, 8, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_302.gif" alt="Bi(30)_bends_302.gif" width="361" height="172" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_303.gif" alt="Bi(30)_bends_303.gif" width="283" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_304.gif" alt="Bi(30)_bends_304.gif" width="392" height="180" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_305.gif" alt="Bi(30)_bends_305.gif" width="382" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_306.gif" alt="Bi(30)_bends_306.gif" width="264" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_307.gif" alt="Bi(30)_bends_307.gif" width="382" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_308.gif" alt="Bi(30)_bends_308.gif" width="418" height="174" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{3, 4, 9, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_309.gif" alt="Bi(30)_bends_309.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_310.gif" alt="Bi(30)_bends_310.gif" width="289" height="166" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_311.gif" alt="Bi(30)_bends_311.gif" width="425" height="212" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_312.gif" alt="Bi(30)_bends_312.gif" width="417" height="194" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_313.gif" alt="Bi(30)_bends_313.gif" width="295" height="184" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_314.gif" alt="Bi(30)_bends_314.gif" width="333" height="184" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_315.gif" alt="Bi(30)_bends_315.gif" width="436" height="188" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
+ <tr style='vertical-align: baseline;'>
+  <td style='text-align: center;'><span>{3, 4, 10, 11}</span></td>
+  <td style='text-align: center;'><span>No, it is nonintegral</span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_316.gif" alt="Bi(30)_bends_316.gif" width="185" height="150" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_317.gif" alt="Bi(30)_bends_317.gif" width="341" height="172" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_318.gif" alt="Bi(30)_bends_318.gif" width="277" height="178" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_319.gif" alt="Bi(30)_bends_319.gif" width="461" height="218" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_320.gif" alt="Bi(30)_bends_320.gif" width="425" height="246" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_321.gif" alt="Bi(30)_bends_321.gif" width="315" height="202" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span><img src="HTMLFiles/Bi(30)_bends_322.gif" alt="Bi(30)_bends_322.gif" width="436" height="188" style="vertical-align:middle" /></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+  <td style='text-align: center;'><span></span></td>
+ </tr>
 </table>
+
+
+
+
+<div style="font-family:Helvetica; font-size:11px; width:100%; border:1px none #999999; border-top-style:solid; padding-top:2px; margin-top:20px;">
+ <a href="http://www.wolfram.com/language/" style="color:#000; text-decoration:none;">
+  <span style="color:#555555">Created with the Wolfram Language</span> 
+ </a>
+</div>
 </body>
+
 </html>
