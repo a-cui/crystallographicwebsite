@@ -1270,7 +1270,16 @@ h1 {
 	</tr>
 	
 	<tr>
-	<td>Bi(1)</td> <!--group name-->
+	<!--<td>Bi(1)</td> <!--group name-->
+			 <div class="dropdown">
+<button onclick="myFunction()" class="dropbtn">Bi(1)</button>
+  <div id="myDropdown" class="dropdown-content">
+    <a href="#home">{1}</a>
+    <a href="Bianchi/Bi(1)/Bi(1)_strip.html" target="_blank">{3}</a>
+    <a href="#contact">Contact</a>
+  </div>
+</div>
+
 	<td><img class="resize1" src="Bianchi/Bi(1)/bianchi_1.png" alt="vizualization"> </td> <!--visualization-->
 	<td><img class="resize1" src="Bianchi/Bi(1)/Bi(1)_Cox.png" alt="Bi(1)'s Coxeter diagram"></td> <!--coxeter diagram-->
 	<td><a href="Bianchi/Bi(1)/Bi(1)_strip.html" target="_blank"><img class="resize1" src="Bianchi/Bi(1)/bianchi_1_1.png" alt="strip"></a></td> <!--strip packing-->
@@ -1911,6 +1920,27 @@ for (i=0; i < coll.length; i++) {
 		}
 	});
 }
+										 
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+function myFunction() {
+    document.getElementById("myDropdown").classList.toggle("show");
+}
+
+// Close the dropdown if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('.dropbtn')) {
+
+    var dropdowns = document.getElementsByClassName("dropdown-content");
+    var i;
+    for (i = 0; i < dropdowns.length; i++) {
+      var openDropdown = dropdowns[i];
+      if (openDropdown.classList.contains('show')) {
+        openDropdown.classList.remove('show');
+      }
+    }
+  }
+}										 
 </script>
 
 </body>
