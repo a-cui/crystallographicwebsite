@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[      1483,         56]
-NotebookOptionsPosition[      1168,         40]
-NotebookOutlinePosition[      1447,         54]
-CellTagsIndexPosition[      1404,         51]
+NotebookDataLength[      1480,         56]
+NotebookOptionsPosition[      1165,         40]
+NotebookOutlinePosition[      1444,         54]
+CellTagsIndexPosition[      1401,         51]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -30,13 +30,13 @@ this file; otherwise, replace the argument of \
 Cell["NotebookEvaluate[\"OurFunctions.nb\"]", "Input"],
 
 Cell["\<\
-coords=ConvertOtherQF[2]/@Coords2[12];
+coords=ConvertOtherQF[3]/@Coords3[5];
 MatrixForm[coords]\
 \>", "Input"],
 
-Cell["MatrixForm[Gram[coords,12-1]]", "Input"],
+Cell["MatrixForm[Gram[coords,5-1]]", "Input"],
 
-Cell["Coxeter[coords,12-1]", "Input"]
+Cell["Coxeter[coords,5-1]", "Input"]
 },
 FrontEndVersion->"11.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (July 28, \
 2016)",
@@ -55,9 +55,9 @@ CellTagsIndex->{}
 Notebook[{
 Cell[558, 20, 375, 7, 70, "Text"],
 Cell[936, 29, 54, 0, 70, "Input"],
-Cell[993, 31, 82, 3, 70, "Input"],
-Cell[1078, 36, 46, 0, 70, "Input"],
-Cell[1127, 38, 37, 0, 70, "Input"]
+Cell[993, 31, 81, 3, 70, "Input"],
+Cell[1077, 36, 45, 0, 70, "Input"],
+Cell[1125, 38, 36, 0, 70, "Input"]
 }
 ]
 *)

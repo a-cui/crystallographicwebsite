@@ -30,7 +30,7 @@ this file; otherwise, replace the argument of \
 Cell["NotebookEvaluate[\"OurFunctions.nb\"]", "Input"],
 
 Cell["\<\
-coords=ConvertOtherQF[2]/@Coords2[12];
+coords=ConvertOtherQF[3]/@Coords3[12];
 MatrixForm[coords]\
 \>", "Input"],
 

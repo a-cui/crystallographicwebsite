@@ -30,13 +30,13 @@ this file; otherwise, replace the argument of \
 Cell["NotebookEvaluate[\"OurFunctions.nb\"]", "Input"],
 
 Cell["\<\
-coords=ConvertOtherQF[2]/@Coords2[12];
+coords=ConvertOtherQF[3]/@Coords3[10];
 MatrixForm[coords]\
 \>", "Input"],
 
-Cell["MatrixForm[Gram[coords,12-1]]", "Input"],
+Cell["MatrixForm[Gram[coords,10-1]]", "Input"],
 
-Cell["Coxeter[coords,12-1]", "Input"]
+Cell["Coxeter[coords,10-1]", "Input"]
 },
 FrontEndVersion->"11.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (July 28, \
 2016)",
